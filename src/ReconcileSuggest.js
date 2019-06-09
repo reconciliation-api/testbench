@@ -7,7 +7,9 @@ let getSuggestionValue = (item) => {
 }
 
 let renderSuggestion = (item) => {
-   return item.name;
+   return (
+        <div>{item.name}</div>
+  );
 }
 
 export default class ReconcileSuggest extends React.Component {
@@ -31,10 +33,14 @@ export default class ReconcileSuggest extends React.Component {
    }
 
    onSuggestionsFetchRequested = (value) => {
-      fetchJsonpParams(this.getUrl(), {prefix:value})
+      let params = {'prefix':value.value};
+      fetchJsonpParams(this.getUrl(), params)
         .then(result => result.json())
-        .then(result =>
-           this.setState(result.result));
+        .then(result => {
+           console.log('got suggestions');
+           console.log(result);
+           this.setState({suggestions: result.result})})
+        .catch(e => console.log(e));
    };
 
    onSuggestionsClearRequested = () => {

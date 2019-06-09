@@ -86,8 +86,8 @@ export default class FeatureRow extends React.Component {
    render() {
       return (
         <tr>
-            <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect}><span className="glyphicon glyphicon-play"></span></Button>{' '}{this.nameCell()}</td>
-            <td><a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
+            <td>{this.nameCell()}</td>
+            <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench"><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
             <td><FeatureCell value={this.state.reacheable} /></td>
             <td><FeatureCell value={this.hasView()} /></td>
             <td><FeatureCell value={this.hasSuggestEntity()} /></td>
