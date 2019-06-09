@@ -28,7 +28,13 @@ export default class FeatureTable extends React.Component {
         .then(result =>
             this.setState({
               services: result.results.bindings.map(entry =>
-                <FeatureRow endpoint={entry.endpoint.value} name={entry.serviceLabel.value} documentation={'documentation' in entry ? entry.documentation.value : undefined} wd_uri={entry.service.value} key={entry.endpoint.value} />
+                <FeatureRow
+                   endpoint={entry.endpoint.value}
+                   name={entry.serviceLabel.value}
+                   documentation={'documentation' in entry ? entry.documentation.value : undefined}
+                   wd_uri={entry.service.value}
+                   onSelect={this.props.onSelect}
+                   key={entry.endpoint.value} />
               )
            })
         )

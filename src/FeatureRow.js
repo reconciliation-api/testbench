@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Button from 'react-bootstrap/lib/Button';
 import FeatureCell from './FeatureCell.js';
 import fetchJsonp from 'fetch-jsonp';
 
@@ -76,10 +77,16 @@ export default class FeatureRow extends React.Component {
       return parts;
    }
 
+   triggerOnSelect = () => {
+      if (this.props.onSelect) {
+        this.props.onSelect(this.props.endpoint, this.state.manifest);
+      }
+   }
+
    render() {
       return (
         <tr>
-            <td>{this.nameCell()}</td>
+            <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect}><span className="glyphicon glyphicon-play"></span></Button>{' '}{this.nameCell()}</td>
             <td><a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
             <td><FeatureCell value={this.state.reacheable} /></td>
             <td><FeatureCell value={this.hasView()} /></td>

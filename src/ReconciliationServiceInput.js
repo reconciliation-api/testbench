@@ -54,12 +54,18 @@ export default class ReconciliationServiceInput extends React.Component {
           endpoint: endpoint,
           manifest: manifest
         });
+        if(this.props.onChange !== undefined) {
+           this.props.onChange(endpoint, manifest);
+        }
     }
   }
 
   _setError(endpoint, error) {
     if(this.state.endpoint === endpoint) {
-      this.setState({manifest: undefined, error: error})
+        this.setState({manifest: undefined, error: error})
+        if(this.props.onChange !== undefined) {
+           this.props.onChange(undefined, undefined);
+        }
     }
   }
   
