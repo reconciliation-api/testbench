@@ -10,13 +10,10 @@ import fetchJsonp from 'fetch-jsonp';
 
 export default class ReconciliationServiceInput extends React.Component {
 
-  constructor() {
-     super();
-     this.state = {
-        endpoint: '',
-        manifest: undefined
-     };
-  }
+  state = {
+    endpoint: this.props.initialEndpoint,
+    manifest: this.props.initialManifest
+  };
 
   componentWillMount() {
      this.timer = null;
@@ -78,6 +75,12 @@ export default class ReconciliationServiceInput extends React.Component {
      return null;
   }
 
+  getMessage() {
+     if (this.getValidationState() === 'error') {
+         return 'The endpoint must return a JSONP document describing the service.';
+     }
+  }
+
   render() {
      return (
         <Form horizontal>
@@ -86,7 +89,7 @@ export default class ReconciliationServiceInput extends React.Component {
             <Col sm={10}>
                 <FormControl type="text" value={this.state.endpoint} placeholder="URL of the reconciliation service endpoint" onChange={e => this.handleChange(e)}/>
                 <FormControl.Feedback />
-                <HelpBlock>The endpoint must return a JSONP document describing the service.</HelpBlock>
+                <HelpBlock>{this.getMessage()}</HelpBlock>
             </Col>
           </FormGroup>
         </Form>
