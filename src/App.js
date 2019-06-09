@@ -12,7 +12,8 @@ export default class App extends React.Component {
     super();
     this.state = {
       endpoint: '',
-      selectedEndpoint: ''
+      selectedEndpoint: '',
+      openTab: 'servicesList',
     };
   }
 
@@ -20,7 +21,8 @@ export default class App extends React.Component {
     this.setState({
       endpoint: endpoint,
       selectedEndpoint: endpoint,
-      manifest: manifest
+      manifest: manifest,
+      openTab: 'testBench',
    });
   }
 
@@ -31,11 +33,15 @@ export default class App extends React.Component {
     });
   };
 
+  handleTabSelect = (key) => {
+     this.setState({ openTab: key });
+  };
+
   render() {
     return (
       <div className="App" style={{margin: '20px'}}>
         <h1>Reconciliation service test bench</h1>
-        <Tabs defaultActiveKey="servicesList" id="main-tabs">
+        <Tabs activeKey={this.state.openTab} onSelect={this.handleTabSelect} id="main-tabs">
           <Tab eventKey="servicesList" title="Services">
             <div style={{marginTop: '10px'}}>
                 <p>This table lists reconciliation services known to <a href="https://www.wikidata.org/">Wikidata</a> and
