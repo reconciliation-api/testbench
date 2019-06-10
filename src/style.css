@@ -1,0 +1,45 @@
+
+.tabContent {
+   margin-top: 10px;
+}
+
+/* Suggest */
+
+.suggestItemId {
+   float: right;
+   font-size: 0.8em;
+}
+
+.suggestItemDescription {
+   color: #888;
+   font-size: 0.9em;
+}
+
+.dropdown-menu > li > a {
+   text-decoration: none;
+   border-bottom: 1px solid #e0e0e0;
+}
+
+.dropdown-menu > li:last-child > a {
+   border: none;
+} 
+
+.dropdown-menu > li > a > li > a {
+   display: inline-block;
+   width: 100%;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis; 
+}
+
+.dropdown-menu a:hover {
+   text-decoration: none;
+}
+
+/* Types */
+
+.reconTypeId {
+   font-size: 0.9em;
+   color: #888;
+}
+

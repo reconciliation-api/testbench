@@ -1,5 +1,5 @@
 import React from 'react';
-import Autosuggest from 'react-autosuggest';
+import {AsyncTypeahead, MenuItem} from 'react-bootstrap-typeahead';
 import fetchJsonpParams from './utils.js';
 
 let getSuggestionValue = (item) => {
@@ -17,7 +17,8 @@ export default class ReconcileSuggest extends React.Component {
      super();
      this.state = {
         value: '',
-        suggestions: []
+        suggestions: [],
+        isLoading: false,
      };
    }
 
@@ -33,14 +34,22 @@ export default class ReconcileSuggest extends React.Component {
    }
 
    onSuggestionsFetchRequested = (value) => {
-      let params = {'prefix':value.value};
-      fetchJsonpParams(this.getUrl(), params)
+      let url = this.getUrl();
+      let params = {'prefix':value};
+      if (url === null) {
+         return;
+      }
+      this.setState({isLoading: true});
+      fetchJsonpParams(url, params)
         .then(result => result.json())
         .then(result => {
            console.log('got suggestions');
            console.log(result);
-           this.setState({suggestions: result.result})})
-        .catch(e => console.log(e));
+           this.setState({suggestions: result.result, isLoading: false})})
+        .catch(e => {
+           console.log(e);
+           this.setState({isLoading: false});
+        });
    };
 
    onSuggestionsClearRequested = () => {
@@ -62,7 +71,7 @@ export default class ReconcileSuggest extends React.Component {
 */
 
    render() {
-      const { value, suggestions } = this.state;
+/*      const { value, suggestions } = this.state;
       const inputProps = {
         value: value,
         onChange: this.onChange,
@@ -71,15 +80,22 @@ export default class ReconcileSuggest extends React.Component {
       if (!this.getUrl()) {
         inputProps.disabled = true;
       }
-
+*/
       return (
-        <Autosuggest
-           inputProps={inputProps}
-           suggestions={suggestions}
-           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-           getSuggestionValue={getSuggestionValue}
-           renderSuggestion={renderSuggestion}
+        <AsyncTypeahead id={this.props.id}
+           disabled={this.getUrl() === null}
+           isLoading={this.state.isLoading}
+           onSearch={this.onSuggestionsFetchRequested}
+           options={this.state.suggestions}
+           labelKey="name"
+           filterBy={(option,props) => true}
+           renderMenuItemChildren={(option, props, index) => 
+              <MenuItem option={option} position={index}>
+                 <span class="suggestItemId">{option.id}</span>
+                 <span class="suggestItemLabel">{option.name}</span><br />
+                 <span class="suggestItemDescription">{option.description}</span>
+              </MenuItem>
+           }
          />
       );
    }
