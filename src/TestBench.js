@@ -11,6 +11,8 @@ import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
+import JSONTree from 'react-json-tree';
+import fetchJsonpParams from './utils.js';
 
 export default class TestBench extends React.Component {
   constructor() {
@@ -64,8 +66,66 @@ export default class TestBench extends React.Component {
      return this.props.manifest && this.props.manifest.suggest && this.props.manifest.suggest.property;
   }
 
-  onSubmitReconciliation(e) {
+  onSubmitReconciliation = (e) => {
      e.preventDefault();
+     if (!this.props.endpoint) {
+        return;
+     }
+     let params = {
+        queries: JSON.stringify({q0: this.formulateReconQuery()})
+     };
+     this.setState({reconResults: 'fetching'});
+     console.log(this.props.endpoint);
+     console.log(params);
+     fetchJsonpParams(this.props.endpoint, params)
+        .then(result => result.json())
+        .then(result =>
+           this.setState({
+              reconResults: result.q0.result
+        }))
+        .catch(e => {
+            this.setState({
+              reconError: e.message,
+              reconResults: 'failed',
+        })});
+  }
+ 
+  renderQueryResults() {
+     if (this.state.reconResults === 'fetching') {
+        return (<div className="resultsPlaceholder">Querying the service...</div>);
+     } else if (this.state.reconResults === 'failed') {
+        return (<div className="resultsPlaceholder">Error: {this.state.reconError}</div>);
+     } else if (this.state.reconResults === undefined) {
+        return (<div />);
+     } else {
+        if (this.state.reconResults.length === 0) {
+           return (<span className="noResults">No results</span>);
+        }
+        return (
+          <ul>
+            {this.state.reconResults.map(result =>
+              <li key={result.id}>
+                <span className="reconResultName">{result.name}</span> (<span className="reconResultId">{result.id}</span>)
+              </li>
+            )}
+          </ul>
+        );
+     }
+  }  
+
+  formulateReconQuery() {
+     let query = {
+        query: this.state.reconQuery,
+     };
+     if (this.state.reconType === 'custom-type' && this.state.reconCustomType !== undefined) {
+        query.type = this.state.reconCustomType.id;
+     }
+     if (this.state.reconProperties.length > 0) {
+        query.properties = this.state.reconProperties
+           .filter(m => m !== undefined && m.property && m.value)
+           .map(m => {return {pid: m.property.id, v: m.value}})
+     }
+     return query;
   }
  
   renderTypeChoices() {
@@ -108,39 +168,72 @@ export default class TestBench extends React.Component {
   }
 
   render() {
+    const theme = {
+       scheme: 'monokai',
+        author: 'wimer hazenberg (http://www.monokai.nl)',
+        base00: '#000000', // '#272822',
+        base01: '#383830',
+        base02: '#49483e',
+        base03: '#75715e',
+        base04: '#a59f85',
+        base05: '#00ff00', //'#f8f8f2',
+        base06: '#f5f4f1',
+        base07: '#f9f8f5',
+        base08: '#f92672',
+        base09: '#fd971f',
+        base0A: '#f4bf75',
+        base0B: '#a6e22e',
+        base0C: '#a1efe4',
+        base0D: '#66d9ef',
+        base0E: '#ae81ff',
+        base0F: '#cc6633'
+        };
+        
     return (
        <Tabs defaultActiveKey="reconcile" id="test-bench-tabs">
          <Tab eventKey="reconcile" title="Reconcile">
             <div className="tabContent">
-              <Form horizontal>
-                <FormGroup controlId="reconcileName">
-                   <Col componentClass={ControlLabel} sm={1}>Name:</Col>
-                   <Col sm={3}>
-                      <InputGroup>
-                      <FormControl
-                         type="text"
-                         placeholder="Entity to reconcile"
-                         value={this.state.reconQuery}
-                         onChange={this.onReconQueryChange} />
-                        <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary">Reconcile</Button></InputGroup.Button>
-                      </InputGroup>
-                   </Col>
-                </FormGroup>
-                <FormGroup controlId="reconcileType">
-                   <Col componentClass={ControlLabel} sm={1}>Type:</Col>
-                   <Col sm={4}>
-                      {this.renderTypeChoices()}
-                   </Col>
-                </FormGroup>
-                {(this.hasPropertySuggest ? 
-                <FormGroup controlId="reconcileProperties">
-                   <Col componentClass={ControlLabel} sm={1}>Properties:</Col>
-                   <Col sm={4}>
-                     <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
-                   </Col>
-                </FormGroup> : <div/>)}
-              </Form>
-              
+              <Col sm={3}>
+                <Form horizontal>
+                    <FormGroup controlId="reconcileName">
+                    <Col componentClass={ControlLabel} sm={2}>Name:</Col>
+                    <Col sm={8}>
+                        <InputGroup>
+                        <FormControl
+                            type="text"
+                            placeholder="Entity to reconcile"
+                            value={this.state.reconQuery}
+                            onChange={this.onReconQueryChange} />
+                            <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.endpoint}>Reconcile</Button></InputGroup.Button>
+                        </InputGroup>
+                    </Col>
+                    </FormGroup>
+                    <FormGroup controlId="reconcileType">
+                    <Col componentClass={ControlLabel} sm={2}>Type:</Col>
+                    <Col sm={8}>
+                        {this.renderTypeChoices()}
+                    </Col>
+                    </FormGroup>
+                    {(this.hasPropertySuggest ? 
+                    <FormGroup controlId="reconcileProperties">
+                    <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
+                    <Col sm={8}>
+                        <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
+                    </Col>
+                    </FormGroup> : <div/>)}
+                </Form>
+              </Col>
+              <Col sm={2}>
+                 <JSONTree
+                        theme={theme}
+                        data={this.formulateReconQuery()}
+                        getItemString={(type, data, itemType, itemString) => ''}
+                        shouldExpandNode={(keyName, data, level) => true}
+                        hideRoot={true} />
+              </Col>
+              <Col sm={2}>
+                 {this.renderQueryResults()}
+              </Col>
             </div>
          </Tab>
          <Tab eventKey="suggest" title="Suggest">
