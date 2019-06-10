@@ -3,8 +3,10 @@ import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import Form from 'react-bootstrap/lib/Form';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
+import InputGroup from 'react-bootstrap/lib/InputGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Radio from 'react-bootstrap/lib/Radio';
+import Button from 'react-bootstrap/lib/Button';
 import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ReconcileSuggest from './ReconcileSuggest.js';
@@ -13,8 +15,37 @@ import PropertyMapping from './PropertyMapping.js';
 export default class TestBench extends React.Component {
   constructor() {
     super();
+
     this.state = {
+        reconQuery: '',
+        reconType: 'no-type',
+        reconCustomType: undefined,
+        reconProperties: []
     };
+  }
+
+  onReconQueryChange = (e) => {
+    this.setState({
+        reconQuery: e.currentTarget.value
+    });
+  }
+
+  onReconTypeChange = (e) => {
+    this.setState({
+        reconType: e.currentTarget.value
+    });
+  }
+
+  onCustomTypeChange = (v) => {
+    this.setState({
+        reconCustomType: v
+    });
+  }
+
+  onReconPropertiesChange = (values) => {
+    this.setState({
+        reconProperties: values
+    });
   }
 
   get defaultTypes() {
@@ -32,20 +63,47 @@ export default class TestBench extends React.Component {
   get hasPropertySuggest() {
      return this.props.manifest && this.props.manifest.suggest && this.props.manifest.suggest.property;
   }
+
+  onSubmitReconciliation(e) {
+     e.preventDefault();
+  }
  
   renderTypeChoices() {
+    let current = this.state.reconType;
     let choices = this.defaultTypes.map(t =>
-       <Radio name="reconcileType" key={'default-'+t.id}>{t.name}<br /><span className="reconTypeId">{t.id}</span></Radio>
+       <Radio
+          name="reconcileType"
+          key={'default-'+t.id}
+          value={'default-'+t.id}
+          checked={current === 'default-'+t.id}
+          onChange={this.onReconTypeChange}>
+        {t.name}<br /><span className="reconTypeId">{t.id}</span>
+      </Radio>
     );
     if (this.hasTypeSuggest) {
-       choices.push(<Radio name="reconcileType" key="custom-type">
+       choices.push(<Radio
+         name="reconcileType"
+         key="custom-type"
+         value="custom-type"
+         checked={current === 'custom-type'}
+         onChange={this.onReconTypeChange}>
            Custom:
            <div style={{display: 'inline-block'}}>{' '}
-             <ReconcileSuggest manifest={this.props.manifest} entityClass="type" id="recon-custom-type-suggest" />
+             <ReconcileSuggest
+                manifest={this.props.manifest}
+                entityClass="type"
+                id="recon-custom-type-suggest"
+                value={this.state.reconCustomType} 
+                onChange={this.onCustomTypeChange} />
            </div>
         </Radio>);
     }
-    choices.push(<Radio name="reconcileType" key="no-type">Reconcile against no particular type</Radio>);
+    choices.push(<Radio
+        name="reconcileType"
+        key="no-type"
+        value="no-type"
+        checked={current === 'no-type'}
+        onChange={this.onReconTypeChange}>Reconcile against no particular type</Radio>);
     return choices;
   }
 
@@ -58,12 +116,19 @@ export default class TestBench extends React.Component {
                 <FormGroup controlId="reconcileName">
                    <Col componentClass={ControlLabel} sm={1}>Name:</Col>
                    <Col sm={3}>
-                      <FormControl type="text" placeholder="Entity to reconcile" />
+                      <InputGroup>
+                      <FormControl
+                         type="text"
+                         placeholder="Entity to reconcile"
+                         value={this.state.reconQuery}
+                         onChange={this.onReconQueryChange} />
+                        <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary">Reconcile</Button></InputGroup.Button>
+                      </InputGroup>
                    </Col>
                 </FormGroup>
                 <FormGroup controlId="reconcileType">
                    <Col componentClass={ControlLabel} sm={1}>Type:</Col>
-                   <Col sm={3}>
+                   <Col sm={4}>
                       {this.renderTypeChoices()}
                    </Col>
                 </FormGroup>
@@ -71,10 +136,11 @@ export default class TestBench extends React.Component {
                 <FormGroup controlId="reconcileProperties">
                    <Col componentClass={ControlLabel} sm={1}>Properties:</Col>
                    <Col sm={4}>
-                     <PropertyMapping manifest={this.props.manifest} />
+                     <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
                    </Col>
                 </FormGroup> : <div/>)}
               </Form>
+              
             </div>
          </Tab>
          <Tab eventKey="suggest" title="Suggest">

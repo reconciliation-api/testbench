@@ -1,25 +1,23 @@
 import React from 'react';
-import {AsyncTypeahead, MenuItem} from 'react-bootstrap-typeahead';
+import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import fetchJsonpParams from './utils.js';
-
-let getSuggestionValue = (item) => {
-   return item.id;
-}
-
-let renderSuggestion = (item) => {
-   return (
-        <div>{item.name}</div>
-  );
-}
 
 export default class ReconcileSuggest extends React.Component {
    constructor() {
      super();
      this.state = {
-        value: '',
+        value: undefined,
         suggestions: [],
         isLoading: false,
      };
+   }
+
+   getValue() {
+     if (this.props.onChange !== undefined) {
+        return this.props.value;
+     } else {
+        return this.state.value;
+     }
    }
 
    getUrl() {
@@ -43,8 +41,6 @@ export default class ReconcileSuggest extends React.Component {
       fetchJsonpParams(url, params)
         .then(result => result.json())
         .then(result => {
-           console.log('got suggestions');
-           console.log(result);
            this.setState({suggestions: result.result, isLoading: false})})
         .catch(e => {
            console.log(e);
@@ -56,31 +52,17 @@ export default class ReconcileSuggest extends React.Component {
       this.setState({suggestions:[]});
    };
 
-   onChange = (event, { newValue }) => {
-     this.setState({
-       value: newValue
-     });
+   onChange = (newValue) => {
+     if (this.props.onChange === undefined) {
+       this.setState({
+         value: newValue[0]
+       });
+     } else {
+        this.props.onChange(newValue[0]);
+     }
    };
 
-/*
-   renderInputComponent() {
-      return (
-        
-      );
-   }
-*/
-
    render() {
-/*      const { value, suggestions } = this.state;
-      const inputProps = {
-        value: value,
-        onChange: this.onChange,
-        placeholder: this.props.entityClass === 'entity' ? 'Type an entity' : 'Type a '+this.props.entityClass
-      };
-      if (!this.getUrl()) {
-        inputProps.disabled = true;
-      }
-*/
       return (
         <AsyncTypeahead id={this.props.id}
            disabled={this.getUrl() === null}
@@ -89,12 +71,14 @@ export default class ReconcileSuggest extends React.Component {
            options={this.state.suggestions}
            labelKey="name"
            filterBy={(option,props) => true}
+           selected={this.getValue() ? [this.getValue()] : []}
+           onChange={this.onChange}
            renderMenuItemChildren={(option, props, index) => 
-              <MenuItem option={option} position={index}>
-                 <span class="suggestItemId">{option.id}</span>
-                 <span class="suggestItemLabel">{option.name}</span><br />
-                 <span class="suggestItemDescription">{option.description}</span>
-              </MenuItem>
+              <>
+                 <span className="suggestItemId">{option.id}</span>
+                 <span className="suggestItemLabel">{option.name}</span><br />
+                 <span className="suggestItemDescription">{option.description}</span>
+              </>
            }
          />
       );

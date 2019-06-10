@@ -1,40 +1,68 @@
 
 import React from 'react';
-import Form from 'react-bootstrap/lib/Form';
-import FormGroup from 'react-bootstrap/lib/FormGroup';
-import Col from 'react-bootstrap/lib/Col';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Button from 'react-bootstrap/lib/Button';
 import ReconcileSuggest from './ReconcileSuggest.js';
 
 export default class PropertyMapping extends React.Component {
 
-  state = {
-     mappings: []
-  }
-
   newMapping = () => {
-     this.setState({
-       mappings:
-          this.state.mappings.concat([{
+     this.emitChange(
+          this.props.value.concat([{
               property: undefined,
               value: '',
        }])
-    });
+    );
   }
 
   deleteMapping = (idx) => {
-     this.setState({
-        mappings: this.state.mappings.splice(idx, 1)
-     });
+     let newArray = this.props.value.slice();
+     newArray.splice(idx, 1);
+     this.emitChange(newArray);
+  }
+
+  onValueChange = (idx, e) => {
+     let newArray = this.props.value.slice();
+     let {property} = newArray[idx];
+     newArray[idx] = {property, value: e.currentTarget.value};
+     this.emitChange(newArray);
+  }
+
+  onPropertyChange = (idx, propertyValue) => {
+     console.log('new property value');
+     console.log(idx);
+     console.log(propertyValue);
+     let newArray = this.props.value.slice();
+     let {value} = newArray[idx];
+     newArray[idx] = {property:propertyValue, value};
+     console.log(newArray);
+     this.emitChange(newArray);
+  }
+
+  emitChange(newValue) {
+     if (this.props.onChange) {
+        this.props.onChange(newValue);
+     }
   }
 
   renderMappings() {
-     return this.state.mappings.map((mapping, idx) =>
-        <div style={{display: 'inline-block', marginBottom: '5px'}}>
-            <div style={{display: 'inline-block', width: '45%'}}><ReconcileSuggest manifest={this.props.manifest} entityClass="property" id={'mapping-property-'+idx} /></div>
-            <div style={{display: 'inline-block', width: '45%'}}><FormControl type="text" placeholder="Type a value" /></div>
-          <Button bsStyle="secondary" bsSize="xsmall" onClick={() => this.deleteMapping(idx)} title="delete property"><span className="glyphicon glyphicon-trash"></span></Button>
+     return this.props.value.map((mapping, idx) =>
+        <div style={{display: 'inline-block', marginBottom: '5px'}} key={idx}>
+            <div style={{display: 'inline-block', width: '45%'}}>
+                <ReconcileSuggest
+                   manifest={this.props.manifest}
+                   entityClass="property"
+                   id={'mapping-property-'+idx}
+                   value={mapping.property}
+                   onChange={v => this.onPropertyChange(idx, v)} />
+            </div>
+            <div style={{display: 'inline-block', width: '45%'}}>
+                <FormControl
+                   type="text"
+                   placeholder="Type a value"
+                   value={mapping.value || ''}
+                   onChange={e => this.onValueChange(idx, e)} /></div>
+          <Button bsStyle="primary" bsSize="xsmall" onClick={() => this.deleteMapping(idx)} title="delete property"><span className="glyphicon glyphicon-trash"></span></Button>
         </div>
      );
   }
