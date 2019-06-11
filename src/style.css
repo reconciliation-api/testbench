@@ -3,6 +3,18 @@
    margin-top: 10px;
 }
 
+.featureCell {
+   text-align: center;
+}
+
+.featureCell-green {
+   background-color: rgba(0,200,0,.15);
+}
+
+.featureCell-red {
+   background-color: rgba(200,0,0,.15);
+}
+
 /* Suggest */
 
 .suggestItemId {

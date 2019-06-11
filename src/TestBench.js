@@ -13,6 +13,7 @@ import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
 import JSONTree from 'react-json-tree';
 import fetchJsonpParams from './utils.js';
+import fetchJsonp from 'fetch-jsonp';
 
 export default class TestBench extends React.Component {
   constructor() {
@@ -71,13 +72,8 @@ export default class TestBench extends React.Component {
      if (!this.props.endpoint) {
         return;
      }
-     let params = {
-        queries: JSON.stringify({q0: this.formulateReconQuery()})
-     };
      this.setState({reconResults: 'fetching'});
-     console.log(this.props.endpoint);
-     console.log(params);
-     fetchJsonpParams(this.props.endpoint, params)
+     fetchJsonp(this.formulateQueryUrl(), {timeout: 20000})
         .then(result => result.json())
         .then(result =>
            this.setState({
@@ -126,6 +122,19 @@ export default class TestBench extends React.Component {
            .map(m => {return {pid: m.property.id, v: m.value}})
      }
      return query;
+  }
+
+  formulateQueryUrl() {
+     let baseUrl = this.props.endpoint;
+     if (!baseUrl) {
+        return '#';
+     }
+     let params = {
+        queries: JSON.stringify({q0: this.formulateReconQuery()})
+     };
+     let url = new URL(baseUrl);
+     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+     return url.toString();
   }
  
   renderTypeChoices() {
@@ -230,6 +239,8 @@ export default class TestBench extends React.Component {
                         getItemString={(type, data, itemType, itemString) => ''}
                         shouldExpandNode={(keyName, data, level) => true}
                         hideRoot={true} />
+                 <br />
+                 <a href={this.formulateQueryUrl()} title="See query results on the service" target="_blank" rel="noopener noreferrer">View query results on the service</a>
               </Col>
               <Col sm={2}>
                  {this.renderQueryResults()}
