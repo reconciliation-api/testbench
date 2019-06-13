@@ -38,14 +38,29 @@ export default class FeatureTable extends React.Component {
         "}\n");
     }
 
-    refreshServicesFromWD = () => {
+    refreshServicesFromWD = (method) => {
        this.setState({
          refreshing: true
        });
        let url = new URL("https://query.wikidata.org/sparql");
        let params = {query:this.sparql_query, format: 'json'};
-       Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-       fetch(url)
+       let promise = null;
+       if (method === 'GET') { 
+         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+         promise = fetch(url);
+       } else {
+         var urlParams = new URLSearchParams();
+         Object.keys(params).forEach(key => urlParams.append(key, params[key]));
+         promise = fetch(url, {
+           method: 'POST',
+           mode: 'cors',
+           cache: 'no-cache',
+           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+           body: urlParams,
+         });
+       }
+
+       promise
         .then(result => result.json())
         .then(result =>
             this.setState({
@@ -63,11 +78,10 @@ export default class FeatureTable extends React.Component {
     }
 
     componentDidMount() {
-       this.refreshServicesFromWD();
+       this.refreshServicesFromWD('GET');
     }
     
     loadAllJsonp = () => {
-       console.log('loading all JSONP');
        this.setState({
         services: this.state.services.map(row => { row.useJsonp(); return row })
        });
@@ -101,7 +115,8 @@ export default class FeatureTable extends React.Component {
              <tr>
                <td>Name</td>
                <td>Endpoint</td>
-               <td>Reacheable</td>
+               <td>CORS</td>
+               <td>JSONP</td>
                <td>View entities</td>
                <td>Suggest entities</td>
                <td>Suggest types</td>
@@ -124,7 +139,7 @@ export default class FeatureTable extends React.Component {
            </tbody>
         </Table>
         <Button onClick={this.openAddServiceDialog}><span className="glyphicon glyphicon-plus"></span> Add a service</Button>&nbsp;&nbsp;&nbsp;
-        <Button onClick={this.refreshServicesFromWD} disabled={this.state.refreshing}><span className="glyphicon glyphicon-refresh"></span> {this.state.refreshing ? 'Refreshing…' : 'Refresh table'}</Button>
+        <Button onClick={() => this.refreshServicesFromWD('POST')} disabled={this.state.refreshing}><span className="glyphicon glyphicon-refresh"></span> {this.state.refreshing ? 'Refreshing…' : 'Refresh table'}</Button>
         
         <Modal show={this.state.showAddServiceDialog} onHide={this.closeAddServiceDialog}>
           <Modal.Header closeButton>

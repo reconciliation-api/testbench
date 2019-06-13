@@ -8,7 +8,8 @@ export default class FeatureRow extends React.Component {
    constructor() {
       super();
       this.state = {
-        reacheable: 'checking',
+        reacheableCORS: 'checking',
+        reacheableJSONP: 'maybe',
         manifest: {},
       }; 
    }
@@ -16,58 +17,63 @@ export default class FeatureRow extends React.Component {
    componentDidMount() {
       fetch(this.props.endpoint, { timeout: 5000 })
         .then(response => response.json())
-        .then(response => this.setState({manifest: response, reacheable: true}))
+        .then(response => this.setState({manifest: response, reacheableCORS: true}))
         .catch(error => {
-           if (this.props.jsonp) {
-              this.checkJsonp();
-           } else {
-              this.setState({reacheable: 'maybe'})
-           }});
+           this.setState({reacheableCORS: false});
+      });
+      if (this.props.jsonp) {
+        this.checkJsonp();
+      }
    }
 
    checkJsonp = () => {
+      this.setState({reacheableJSONP: 'checking'});
       fetchJsonp(this.props.endpoint)
         .then(response => response.json())
-        .then(response => this.setState({manifest: response, reacheable: true}))
-        .catch(error => this.setState({reacheable: false}));
+        .then(response => this.setState({manifest: response, reacheableJSONP: true}))
+        .catch(error => this.setState({reacheableJSONP: false}));
    }
 
    suggestSettings() {
       return this.state.manifest.suggest || {};
    }
+
+   get isReacheable() {
+      return this.state.reacheableCORS === true || this.state.reacheableJSONP === true;
+   }
    
    hasView() {
-      if (this.state.reacheable !== true)
+      if (!this.isReacheable)
         return null;
       return 'url' in (this.state.manifest.view || {});
    }
 
    hasSuggestEntity() {
-      if (this.state.reacheable !== true)
+      if (!this.isReacheable)
         return null;
       return 'entity' in this.suggestSettings();
    }
 
    hasSuggestProperty() {
-      if (this.state.reacheable !== true)
+      if (!this.isReacheable)
         return null;
       return 'property' in this.suggestSettings();
    }
 
    hasSuggestType() {
-      if (this.state.reacheable !== true)
+      if (!this.isReacheable)
         return null;
       return 'type' in this.suggestSettings();
    }
 
    hasPreview() {
-      if (this.state.reacheable !== true)
+      if (!this.isReacheable)
         return null;
       return 'preview' in this.state.manifest;
    }
 
    hasExtend() {
-      if (this.state.reacheable !== true)
+      if (!this.isReacheable)
         return null;
       return 'extend' in this.state.manifest;
    }
@@ -100,7 +106,8 @@ export default class FeatureRow extends React.Component {
         <tr>
             <td>{this.nameCell()}</td>
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench"><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
-            <FeatureCell value={this.state.reacheable} onClick={this.checkJsonp} />
+            <FeatureCell value={this.state.reacheableCORS} />
+            <FeatureCell value={this.state.reacheableJSONP} onClick={this.checkJsonp} />
             <FeatureCell value={this.hasView()} />
             <FeatureCell value={this.hasSuggestEntity()} />
             <FeatureCell value={this.hasSuggestType()} />
