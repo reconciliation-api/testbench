@@ -15,6 +15,10 @@
    background-color: rgba(200,0,0,.15);
 }
 
+.featureCell-yellow {
+   background-color: rgba(210,210,0,.15);
+}
+
 /* Suggest */
 
 .suggestItemId {

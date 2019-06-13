@@ -14,6 +14,18 @@ export default class FeatureRow extends React.Component {
    }
 
    componentDidMount() {
+      fetch(this.props.endpoint, { timeout: 5000 })
+        .then(response => response.json())
+        .then(response => this.setState({manifest: response, reacheable: true}))
+        .catch(error => {
+           if (this.props.jsonp) {
+              this.checkJsonp();
+           } else {
+              this.setState({reacheable: 'maybe'})
+           }});
+   }
+
+   checkJsonp = () => {
       fetchJsonp(this.props.endpoint)
         .then(response => response.json())
         .then(response => this.setState({manifest: response, reacheable: true}))
@@ -88,7 +100,7 @@ export default class FeatureRow extends React.Component {
         <tr>
             <td>{this.nameCell()}</td>
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench"><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
-            <FeatureCell value={this.state.reacheable} />
+            <FeatureCell value={this.state.reacheable} onClick={this.checkJsonp} />
             <FeatureCell value={this.hasView()} />
             <FeatureCell value={this.hasSuggestEntity()} />
             <FeatureCell value={this.hasSuggestType()} />

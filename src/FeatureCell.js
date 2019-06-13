@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Button from 'react-bootstrap/lib/Button';
 
 export default class FeatureCell extends React.Component {
    render() {
@@ -20,9 +21,20 @@ export default class FeatureCell extends React.Component {
       } else if (this.props.value === 'checking') {
         glyph = 'glyphicon glyphicon-hourglass';
         text = 'fetching...';
+      } else if (this.props.value === 'maybe') {
+        glyph = 'glyphicon glyphicon-search';
+        text = 'Not reachable via CORS, click to check via JSONP';
+        cellClass = 'featureCell-yellow';
+      }
+      let span = <span className={glyph} sr-only={text} style={{color: color}}></span>;
+      let link = span;
+      if (this.props.onClick && this.props.value === 'maybe') {
+         link = <Button onClick={this.props.onClick} bsStyle="warning" bsSize="xsmall" title="Check with JSONP">{span}</Button>
       }
       return (
-        <td className={'featureCell '+cellClass}><span className={glyph} sr-only={text} style={{color: color}}></span></td>
+        <td className={'featureCell '+cellClass}>
+           {link}
+        </td>
       );
    }
 }

@@ -4,6 +4,21 @@ import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
 import FeatureRow from './FeatureRow.js';
 
+class Row {
+    constructor(endpoint, name, documentation, wd_uri) {
+       this.endpoint = endpoint;
+       this.name = name;
+       this.documentation = documentation;
+       this.wd_uri = wd_uri;
+       this.jsonp = false;
+    }
+
+    useJsonp() {
+       this.jsonp = true;
+    }
+}
+
+
 export default class FeatureTable extends React.Component {
     constructor() {
       super();
@@ -35,14 +50,9 @@ export default class FeatureTable extends React.Component {
         .then(result =>
             this.setState({
               services: result.results.bindings.map(entry =>
-                <FeatureRow
-                   endpoint={entry.endpoint.value}
-                   name={entry.serviceLabel.value}
-                   documentation={'documentation' in entry ? entry.documentation.value : undefined}
-                   wd_uri={entry.service.value}
-                   onSelect={this.props.onSelect}
-                   key={entry.endpoint.value} />
-              ),
+                new Row(entry.endpoint.value, entry.serviceLabel.value,
+                    'documentation' in entry ? entry.documentation.value : undefined,
+                    entry.service.value)),
               refreshing: false
            })
         )
@@ -56,6 +66,13 @@ export default class FeatureTable extends React.Component {
        this.refreshServicesFromWD();
     }
     
+    loadAllJsonp = () => {
+       console.log('loading all JSONP');
+       this.setState({
+        services: this.state.services.map(row => { row.useJsonp(); return row })
+       });
+    }
+
     openAddServiceDialog = () => {
         this.setState({
            showAddServiceDialog: true
@@ -75,6 +92,10 @@ export default class FeatureTable extends React.Component {
     render() {
       return (
         <>
+          <p>Due to <a href="https://en.wikipedia.org/wiki/JSONP#Security_concerns">a security risk inherent to JSONP</a>, only endpoints supporting <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> are loaded by default. You can click the{' '}
+          <span className="glyphicon glyphicon-search"></span> button in each row to attempt to load the service via <a href="https://en.wikipedia.org/wiki/JSONP">JSONP</a>.
+          Note that a malicious endpoint could use JSONP to execute arbitrary JavaScript code in this page. If you trust all the reconciliation services listed here, you can also <a onClick={this.loadAllJsonp}>load all endpoints via JSONP</a>.
+          </p>
         <Table striped bordered hover>
            <thead>
              <tr>
@@ -90,7 +111,16 @@ export default class FeatureTable extends React.Component {
              </tr>
            </thead>
            <tbody>
-              {this.state.services}
+              {this.state.services.map(
+                row => <FeatureRow
+                        endpoint={row.endpoint}
+                        name={row.name}
+                        documentation={row.documentation}
+                        wd_uri={row.wd_uri}
+                        jsonp={row.jsonp}
+                        onSelect={this.props.onSelect}
+                        key={row.endpoint+(row.jsonp ? ' jsonp' : ' cors')} />)
+               }
            </tbody>
         </Table>
         <Button onClick={this.openAddServiceDialog}><span className="glyphicon glyphicon-plus"></span> Add a service</Button>&nbsp;&nbsp;&nbsp;
