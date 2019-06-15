@@ -12,7 +12,6 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
 import JSONTree from 'react-json-tree';
-import fetchJsonpParams from './utils.js';
 import fetchJsonp from 'fetch-jsonp';
 
 export default class TestBench extends React.Component {

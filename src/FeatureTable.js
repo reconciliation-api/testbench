@@ -108,7 +108,7 @@ export default class FeatureTable extends React.Component {
         <>
           <p>Due to <a href="https://en.wikipedia.org/wiki/JSONP#Security_concerns">a security risk inherent to JSONP</a>, only endpoints supporting <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> are loaded by default. You can click the{' '}
           <span className="glyphicon glyphicon-search"></span> button in each row to attempt to load the service via <a href="https://en.wikipedia.org/wiki/JSONP">JSONP</a>.
-          Note that a malicious endpoint could use JSONP to execute arbitrary JavaScript code in this page. If you trust all the reconciliation services listed here, you can also <a onClick={this.loadAllJsonp}>load all endpoints via JSONP</a>.
+          Note that a malicious endpoint could use JSONP to execute arbitrary JavaScript code in this page. If you trust all the reconciliation services listed here, you can also <Button onClick={this.loadAllJsonp} bsSize="xsmall">load all endpoints via JSONP</Button>.
           </p>
         <Table striped bordered hover>
            <thead>
