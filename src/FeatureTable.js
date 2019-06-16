@@ -5,10 +5,11 @@ import Button from 'react-bootstrap/lib/Button';
 import FeatureRow from './FeatureRow.js';
 
 class Row {
-    constructor(endpoint, name, documentation, wd_uri) {
+    constructor(endpoint, name, documentation, source_url, wd_uri) {
        this.endpoint = endpoint;
        this.name = name;
        this.documentation = documentation;
+       this.source_url = source_url;
        this.wd_uri = wd_uri;
        this.jsonp = false;
     }
@@ -29,11 +30,12 @@ export default class FeatureTable extends React.Component {
        };
 
        this.sparql_query = (
-        "SELECT ?service ?serviceLabel ?endpoint ?documentation WHERE {\n" +
+        "SELECT ?service ?serviceLabel ?endpoint ?documentation ?source WHERE {\n" +
         "  ?service p:P6269 ?statement.\n"+
         "  ?statement ps:P6269 ?endpoint ;\n"+
         "     pq:P2700 wd:Q64490175.\n"+
-        "  OPTIONAL { ?statement pq:P973 ?documentation }\n" +
+        "  OPTIONAL { ?statement (pq:P973 | pq:2078) ?documentation }\n" +
+        "  OPTIONAL { ?statement pq:P1324 ?source }\n" +
         "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n" +
         "}\n");
     }
@@ -67,6 +69,7 @@ export default class FeatureTable extends React.Component {
               services: result.results.bindings.map(entry =>
                 new Row(entry.endpoint.value, entry.serviceLabel.value,
                     'documentation' in entry ? entry.documentation.value : undefined,
+                    'source' in entry ? entry.source.value : undefined,
                     entry.service.value)),
               refreshing: false
            })
@@ -131,6 +134,7 @@ export default class FeatureTable extends React.Component {
                         endpoint={row.endpoint}
                         name={row.name}
                         documentation={row.documentation}
+                        source_url={row.source_url}
                         wd_uri={row.wd_uri}
                         jsonp={row.jsonp}
                         onSelect={this.props.onSelect}

@@ -82,8 +82,14 @@ export default class FeatureRow extends React.Component {
       let parts = [
         <span key='name'>{this.props.name}</span>
       ];
-      if (this.props.documentation) {
+      if (this.props.documentation && !this.props.source_url) {
          parts.push(<span key='docs'> (<a href={this.props.documentation} target="_blank" rel="noopener noreferrer" title="Read endpoint documentation">docs</a>)</span>);
+      }
+      if (this.props.documentation && this.props.source_url) {
+         parts.push(<span key='docs'> (<a href={this.props.documentation} target="_blank" rel="noopener noreferrer" title="Read endpoint documentation">docs</a>, <a href={this.props.source_url} target="_blank" rel="noopener noreferrer" title="View endpoint source code">source</a>)</span>);
+      }
+      if (!this.props.documentation && this.props.source_url) {
+         parts.push(<span key='docs'> (<a href={this.props.source_url} target="_blank" rel="noopener noreferrer" title="View endpoint source code">source</a>)</span>);
       }
       if (this.props.wd_uri) {
          parts.push(<span key="wd" style={{float: 'right'}}>
