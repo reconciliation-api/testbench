@@ -39,10 +39,14 @@ export default class App extends React.Component {
   };
 
   render() {
+    let testBench = <div />;
+    if (this.state.endpoint) {
+        testBench = <TestBench endpoint={this.state.endpoint} manifest={this.state.manifest} />;
+    }
     return (
       <div className="App" style={{margin: '20px'}}>
         <h1>Reconciliation service test bench</h1>
-        <Tabs activeKey={this.state.openTab} onSelect={this.handleTabSelect} id="main-tabs">
+        <Tabs activeKey={this.state.openTab} onSelect={this.handleTabSelect} animation={false} id="main-tabs">
           <Tab eventKey="servicesList" title="Services">
             <div className="tabContent">
                 <p>This table lists reconciliation services known to <a href="https://www.wikidata.org/">Wikidata</a> and
@@ -61,7 +65,7 @@ export default class App extends React.Component {
                  initialEndpoint={this.state.selectedEndpoint}
                  initialManifest={this.state.manifest} 
                  key={this.state.selectedEndpoint} />
-              <TestBench endpoint={this.state.endpoint} manifest={this.state.manifest} />
+              {testBench}
             </div>
           </Tab>
         </Tabs>

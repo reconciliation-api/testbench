@@ -198,7 +198,7 @@ export default class TestBench extends React.Component {
         };
         
     return (
-       <Tabs defaultActiveKey="reconcile" id="test-bench-tabs">
+       <Tabs defaultActiveKey="reconcile" animation={false} id="test-bench-tabs">
          <Tab eventKey="reconcile" title="Reconcile">
             <div className="tabContent">
               <Col sm={3}>
