@@ -6,6 +6,9 @@ It is meant to be a companion to the [W3C Entity Reconciliation Community Group]
 to assess the current usage of the [çOpenRefine reconciliation API](https://github.com/OpenRefine/OpenRefine/wiki/Reconciliation-Service-API).
 
 This application is developed with React and calls to the reconciliation services are made directly from the browser.
+It can be used at:
+
+https://reconciliation-api.github.io/testbench/
 
 ## Available Scripts
 
@@ -32,7 +35,11 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 'npm run deploy'
+
+Deploys the web app on GitHub Pages. It will become available at:
+
+https://reconciliation-api.github.io/testbench/
 
 ### `npm run eject`
 
