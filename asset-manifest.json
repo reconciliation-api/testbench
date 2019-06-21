@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/testbench/static/css/main.c206011b.chunk.css",
+    "main.js": "/testbench/static/js/main.7b897ff0.chunk.js",
+    "main.js.map": "/testbench/static/js/main.7b897ff0.chunk.js.map",
+    "runtime~main.js": "/testbench/static/js/runtime~main.09e70599.js",
+    "runtime~main.js.map": "/testbench/static/js/runtime~main.09e70599.js.map",
+    "static/css/2.8604e687.chunk.css": "/testbench/static/css/2.8604e687.chunk.css",
+    "static/js/2.caebb07c.chunk.js": "/testbench/static/js/2.caebb07c.chunk.js",
+    "static/js/2.caebb07c.chunk.js.map": "/testbench/static/js/2.caebb07c.chunk.js.map",
+    "index.html": "/testbench/index.html",
+    "precache-manifest.f2cacf54102f4941f4e90db35d5c6a5b.js": "/testbench/precache-manifest.f2cacf54102f4941f4e90db35d5c6a5b.js",
+    "service-worker.js": "/testbench/service-worker.js",
+    "static/css/2.8604e687.chunk.css.map": "/testbench/static/css/2.8604e687.chunk.css.map",
+    "static/css/main.c206011b.chunk.css.map": "/testbench/static/css/main.c206011b.chunk.css.map",
+    "static/media/bootstrap.min.css": "/testbench/static/media/glyphicons-halflings-regular.fa277232.woff"
+  }
+}
