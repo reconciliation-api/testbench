@@ -1,4 +1,11 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Reconciliation service test bench
+=================================
+
+This web application can be used to play with OpenRefine reconciliation services.
+It is meant to be a companion to the [W3C Entity Reconciliation Community Group](https://www.w3.org/community/reconciliation/)
+to assess the current usage of the [çOpenRefine reconciliation API](https://github.com/OpenRefine/OpenRefine/wiki/Reconciliation-Service-API).
+
+This application is developed with React and calls to the reconciliation services are made directly from the browser.
 
 ## Available Scripts
 

@@ -59,3 +59,9 @@
    color: #888;
 }
 
+/* Candidates */
+
+.active > .list-group-item-text > a {
+   color: white;
+}
+

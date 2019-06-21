@@ -9,8 +9,10 @@ import Radio from 'react-bootstrap/lib/Radio';
 import Button from 'react-bootstrap/lib/Button';
 import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
+import ListGroup from 'react-bootstrap/lib/ListGroup';
 import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
+import Candidate from './Candidate.js';
 import JSONTree from 'react-json-tree';
 import fetchJsonp from 'fetch-jsonp';
 
@@ -97,13 +99,11 @@ export default class TestBench extends React.Component {
            return (<span className="noResults">No results</span>);
         }
         return (
-          <ul>
+          <ListGroup>
             {this.state.reconResults.map(result =>
-              <li key={result.id}>
-                <span className="reconResultName">{result.name}</span> (<span className="reconResultId">{result.id}</span>)
-              </li>
+              <Candidate candidate={result} manifest={this.props.manifest} />
             )}
-          </ul>
+          </ListGroup>
         );
      }
   }  
