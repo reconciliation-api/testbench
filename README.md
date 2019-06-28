@@ -12,7 +12,9 @@ https://reconciliation-api.github.io/testbench/
 
 ## Available Scripts
 
-In the project directory, you can run:
+Before running these scripts, set up your project by running `npm install`.
+
+In the project directory, you can then run:
 
 ### `npm start`
 
@@ -35,7 +37,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
-### 'npm run deploy'
+### `npm run deploy`
 
 Deploys the web app on GitHub Pages. It will become available at:
 
