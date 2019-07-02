@@ -114,6 +114,8 @@ export default class TestBench extends React.Component {
      };
      if (this.state.reconType === 'custom-type' && this.state.reconCustomType !== undefined) {
         query.type = this.state.reconCustomType.id;
+     } else if (this.state.reconType !== 'no-type') {
+        query.type = this.state.reconType;
      }
      if (this.state.reconProperties.length > 0) {
         query.properties = this.state.reconProperties
@@ -141,9 +143,9 @@ export default class TestBench extends React.Component {
     let choices = this.defaultTypes.map(t =>
        <Radio
           name="reconcileType"
-          key={'default-'+t.id}
-          value={'default-'+t.id}
-          checked={current === 'default-'+t.id}
+          key={t.id}
+          value={t.id}
+          checked={current === t.id}
           onChange={this.onReconTypeChange}>
         {t.name}<br /><span className="reconTypeId">{t.id}</span>
       </Radio>
