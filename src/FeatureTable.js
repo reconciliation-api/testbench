@@ -47,7 +47,7 @@ export default class FeatureTable extends React.Component {
        let url = new URL("https://query.wikidata.org/sparql");
        let params = {query:this.sparql_query, format: 'json'};
        let promise = null;
-       if (method === 'GET') { 
+       if (method === 'GET') {
          Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
          promise = fetch(url);
        } else {
@@ -83,7 +83,7 @@ export default class FeatureTable extends React.Component {
     componentDidMount() {
        this.refreshServicesFromWD('GET');
     }
-    
+
     loadAllJsonp = () => {
        this.setState({
         services: this.state.services.map(row => { row.useJsonp(); return row })
@@ -144,7 +144,7 @@ export default class FeatureTable extends React.Component {
         </Table>
         <Button onClick={this.openAddServiceDialog}><span className="glyphicon glyphicon-plus"></span> Add a service</Button>&nbsp;&nbsp;&nbsp;
         <Button onClick={() => this.refreshServicesFromWD('POST')} disabled={this.state.refreshing}><span className="glyphicon glyphicon-refresh"></span> {this.state.refreshing ? 'Refreshing…' : 'Refresh table'}</Button>
-        
+
         <Modal show={this.state.showAddServiceDialog} onHide={this.closeAddServiceDialog}>
           <Modal.Header closeButton>
             <Modal.Title>How to add a service to this list</Modal.Title>
