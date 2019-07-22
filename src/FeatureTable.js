@@ -37,7 +37,8 @@ export default class FeatureTable extends React.Component {
         "  OPTIONAL { ?statement (pq:P973 | pq:P2078) ?documentation }\n" +
         "  OPTIONAL { ?statement pq:P1324 ?source }\n" +
         "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n" +
-        "}\n");
+        "}\n" +
+        "ORDER BY ?endpoint\n");
     }
 
     refreshServicesFromWD = (method) => {
