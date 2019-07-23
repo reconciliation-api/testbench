@@ -38,7 +38,7 @@ export default class FeatureTable extends React.Component {
         "  OPTIONAL { ?statement pq:P1324 ?source }\n" +
         "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n" +
         "}\n" +
-        "ORDER BY ?endpoint\n");
+        "ORDER BY DESC(?endpoint)\n");
     }
 
     refreshServicesFromWD = (method) => {
