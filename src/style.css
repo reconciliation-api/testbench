@@ -65,3 +65,6 @@
    color: white;
 }
 
+div .radio label {
+    width: 100%;
+}

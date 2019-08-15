@@ -158,7 +158,7 @@ export default class TestBench extends React.Component {
          checked={current === 'custom-type'}
          onChange={this.onReconTypeChange}>
            Custom:
-           <div style={{display: 'inline-block'}}>{' '}
+           <div>
              <ReconcileSuggest
                 manifest={this.props.manifest}
                 entityClass="type"
