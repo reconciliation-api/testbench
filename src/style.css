@@ -24,11 +24,21 @@
 .suggestItemId {
    float: right;
    font-size: 0.8em;
+   padding-left: 5px;
+   max-width: 50%;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.suggestItemLabel {
+   max-width: 50%;
+   white-space: normal;
 }
 
 .suggestItemDescription {
    color: #888;
    font-size: 0.9em;
+   white-space: normal;
 }
 
 .dropdown-menu > li > a {
