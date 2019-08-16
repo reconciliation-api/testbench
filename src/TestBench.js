@@ -158,7 +158,7 @@ export default class TestBench extends React.Component {
          checked={current === 'custom-type'}
          onChange={this.onReconTypeChange}>
            Custom:
-           <div style={{display: 'inline-block'}}>{' '}
+           <div>
              <ReconcileSuggest
                 manifest={this.props.manifest}
                 entityClass="type"
@@ -203,11 +203,11 @@ export default class TestBench extends React.Component {
        <Tabs defaultActiveKey="reconcile" animation={false} id="test-bench-tabs">
          <Tab eventKey="reconcile" title="Reconcile">
             <div className="tabContent">
-              <Col sm={3}>
+              <Col sm={5}>
                 <Form horizontal>
                     <FormGroup controlId="reconcileName">
                     <Col componentClass={ControlLabel} sm={2}>Name:</Col>
-                    <Col sm={8}>
+                    <Col sm={10}>
                         <InputGroup>
                         <FormControl
                             type="text"
@@ -220,20 +220,20 @@ export default class TestBench extends React.Component {
                     </FormGroup>
                     <FormGroup controlId="reconcileType">
                     <Col componentClass={ControlLabel} sm={2}>Type:</Col>
-                    <Col sm={8}>
+                    <Col sm={10}>
                         {this.renderTypeChoices()}
                     </Col>
                     </FormGroup>
                     {(this.hasPropertySuggest ? 
                     <FormGroup controlId="reconcileProperties">
                     <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
-                    <Col sm={8}>
+                    <Col sm={10}>
                         <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
                     </Col>
                     </FormGroup> : <div/>)}
                 </Form>
               </Col>
-              <Col sm={2}>
+              <Col sm={3}>
                  <JSONTree
                         theme={theme}
                         data={this.formulateReconQuery()}
@@ -243,7 +243,7 @@ export default class TestBench extends React.Component {
                  <br />
                  <a href={this.formulateQueryUrl()} title="See query results on the service" target="_blank" rel="noopener noreferrer">View query results on the service</a>
               </Col>
-              <Col sm={2}>
+              <Col sm={4}>
                  {this.renderQueryResults()}
               </Col>
             </div>
@@ -253,19 +253,19 @@ export default class TestBench extends React.Component {
               <Form horizontal>
                 <FormGroup controlId="suggestEntityTestBench">
                     <Col componentClass={ControlLabel} sm={1}>Entity:</Col>
-                    <Col sm={3}>
+                    <Col sm={11}>
                         <ReconcileSuggest manifest={this.props.manifest} entityClass="entity" id="entity-suggest-test" />
                     </Col>
                 </FormGroup>
                 <FormGroup controlId="suggestTypeTestBench">
                     <Col componentClass={ControlLabel} sm={1}>Type:</Col>
-                    <Col sm={3}>
+                    <Col sm={11}>
                         <ReconcileSuggest manifest={this.props.manifest} entityClass="type" id="type-suggest-test" />
                     </Col>
                 </FormGroup>
                 <FormGroup controlId="suggestPropertyTestBench">
                     <Col componentClass={ControlLabel} sm={1}>Property:</Col>
-                    <Col sm={3}>
+                    <Col sm={11}>
                         <ReconcileSuggest manifest={this.props.manifest} entityClass="property" id="property-suggest-test" />
                     </Col>
                 </FormGroup>
