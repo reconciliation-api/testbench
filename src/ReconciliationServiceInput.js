@@ -81,9 +81,15 @@ export default class ReconciliationServiceInput extends React.Component {
      }
   }
 
+  handleSubmit(e) {
+     clearTimeout(this.timer);
+     this.validateEndpoint();
+     e.preventDefault();
+  }
+
   render() {
      return (
-        <Form horizontal>
+        <Form horizontal onSubmit={(e) => this.handleSubmit(e)}>
           <FormGroup controlId="endpointField" validationState={this.getValidationState()}>
             <Col componentClass={ControlLabel} sm={1}>Endpoint:</Col>
             <Col sm={11}>
