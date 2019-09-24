@@ -24,7 +24,8 @@ export default class TestBench extends React.Component {
         reconQuery: '',
         reconType: 'no-type',
         reconCustomType: undefined,
-        reconProperties: []
+        reconProperties: [],
+        reconLimit: undefined
     };
   }
 
@@ -49,6 +50,12 @@ export default class TestBench extends React.Component {
   onReconPropertiesChange = (values) => {
     this.setState({
         reconProperties: values
+    });
+  }
+
+  onReconLimitChange = (e) => {
+    this.setState({
+        reconLimit: e.currentTarget.value
     });
   }
 
@@ -121,6 +128,9 @@ export default class TestBench extends React.Component {
         query.properties = this.state.reconProperties
            .filter(m => m !== undefined && m.property && m.value)
            .map(m => {return {pid: m.property.id, v: m.value}})
+     }
+     if (!isNaN(parseInt(this.state.reconLimit))) {
+        query.limit = parseInt(this.state.reconLimit);
      }
      return query;
   }
@@ -206,31 +216,41 @@ export default class TestBench extends React.Component {
               <Col sm={5}>
                 <Form horizontal>
                     <FormGroup controlId="reconcileName">
-                    <Col componentClass={ControlLabel} sm={2}>Name:</Col>
-                    <Col sm={10}>
-                        <InputGroup>
-                        <FormControl
-                            type="text"
-                            placeholder="Entity to reconcile"
-                            value={this.state.reconQuery}
-                            onChange={this.onReconQueryChange} />
-                            <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.endpoint}>Reconcile</Button></InputGroup.Button>
-                        </InputGroup>
-                    </Col>
+                        <Col componentClass={ControlLabel} sm={2}>Name:</Col>
+                        <Col sm={10}>
+                            <InputGroup>
+                            <FormControl
+                                type="text"
+                                placeholder="Entity to reconcile"
+                                value={this.state.reconQuery}
+                                onChange={this.onReconQueryChange} />
+                                <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.endpoint}>Reconcile</Button></InputGroup.Button>
+                            </InputGroup>
+                        </Col>
                     </FormGroup>
                     <FormGroup controlId="reconcileType">
-                    <Col componentClass={ControlLabel} sm={2}>Type:</Col>
-                    <Col sm={10}>
-                        {this.renderTypeChoices()}
-                    </Col>
+                        <Col componentClass={ControlLabel} sm={2}>Type:</Col>
+                        <Col sm={10}>
+                            {this.renderTypeChoices()}
+                        </Col>
                     </FormGroup>
                     {(this.hasPropertySuggest ? 
                     <FormGroup controlId="reconcileProperties">
-                    <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
-                    <Col sm={10}>
-                        <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
-                    </Col>
+                        <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
+                        <Col sm={10}>
+                            <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
+                        </Col>
                     </FormGroup> : <div/>)}
+                    <FormGroup controlId="reconcileLimit">
+                        <Col componentClass={ControlLabel} sm={2}>Limit:</Col>
+                        <Col sm={10}>
+                           <FormControl
+                                type="number"
+                                placeholder="Maximum number of candidates"
+                                value={this.state.reconLimit}
+                                onChange={(v) => this.onReconLimitChange(v)} />
+                        </Col>
+                    </FormGroup>
                 </Form>
               </Col>
               <Col sm={3}>
