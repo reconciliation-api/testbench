@@ -12,25 +12,23 @@ export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      endpoint: '',
       selectedEndpoint: '',
+      service: {},
       openTab: 'servicesList',
     };
   }
 
-  onEndpointSelect = (endpoint, manifest) => {
+  onEndpointSelect = (service) => {
     this.setState({
-      endpoint: endpoint,
-      selectedEndpoint: endpoint,
-      manifest: manifest,
+      service: service,
+      selectedEndpoint: service.endpoint,
       openTab: 'testBench',
    });
   }
 
-  onEndpointChange = (endpoint, manifest) => {
+  onEndpointChange = (service) => {
     this.setState({
-      endpoint: endpoint,
-      manifest: manifest
+       service: service,
     });
   };
 
@@ -40,8 +38,8 @@ export default class App extends React.Component {
 
   render() {
     let testBench = <div />;
-    if (this.state.endpoint) {
-        testBench = <TestBench endpoint={this.state.endpoint} manifest={this.state.manifest} />;
+    if (this.state.service && this.state.service.endpoint) {
+        testBench = <TestBench service={this.state.service} />;
     }
     return (
       <div className="App" style={{margin: '20px'}}>
@@ -63,8 +61,7 @@ export default class App extends React.Component {
               <p>This form lets you test a reconciliation endpoint interactively.</p>
               <ReconciliationServiceInput
                  onChange={this.onEndpointChange}
-                 initialEndpoint={this.state.selectedEndpoint}
-                 initialManifest={this.state.manifest} 
+	         initialService={this.state.service}
                  key={this.state.selectedEndpoint} />
               {testBench}
             </div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
-import fetchJsonpParams from './utils.js';
 
 export default class ReconcileSuggest extends React.Component {
    constructor() {
@@ -20,11 +19,19 @@ export default class ReconcileSuggest extends React.Component {
      }
    }
 
+   get manifest() {
+      if (!this.props.service) {
+	 return null;
+      } else {
+	 return this.props.service.manifest;
+      }
+   }
+
    getUrl() {
-     if (!this.props.manifest || !this.props.manifest.suggest) {
+     if (!this.manifest || !this.manifest.suggest) {
         return null;
      }
-     let configuration = this.props.manifest.suggest[this.props.entityClass];
+     let configuration = this.manifest.suggest[this.props.entityClass];
      if (!configuration) {
         return null;
      }
@@ -38,7 +45,8 @@ export default class ReconcileSuggest extends React.Component {
          return;
       }
       this.setState({isLoading: true});
-      fetchJsonpParams(url, params)
+      let fetcher = this.props.service.getFetcher();
+      fetcher(url, params)
         .then(result => result.json())
         .then(result => {
            this.setState({suggestions: result.result, isLoading: false})})

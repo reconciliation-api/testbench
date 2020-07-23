@@ -3,6 +3,7 @@ import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import FeatureCell from './FeatureCell.js';
 import fetchJsonp from 'fetch-jsonp';
+import ReconciliationService from './ReconciliationService.js';
 
 export default class FeatureRow extends React.Component {
    constructor() {
@@ -103,7 +104,7 @@ export default class FeatureRow extends React.Component {
 
    triggerOnSelect = () => {
       if (this.props.onSelect) {
-        this.props.onSelect(this.props.endpoint, this.state.manifest);
+        this.props.onSelect(new ReconciliationService(this.props.endpoint, this.state.manifest, this.state.reacheableCORS));
       }
    }
 

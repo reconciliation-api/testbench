@@ -14,7 +14,6 @@ import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
 import Candidate from './Candidate.js';
 import JSONTree from 'react-json-tree';
-import fetchJsonp from 'fetch-jsonp';
 
 export default class TestBench extends React.Component {
   constructor() {
@@ -60,28 +59,35 @@ export default class TestBench extends React.Component {
   }
 
   get defaultTypes() {
-     if (this.props.manifest) {
-        return this.props.manifest.defaultTypes || [];
+     if (this.props.service && this.props.service.manifest) {
+        return this.props.service.manifest.defaultTypes || [];
     } else {
         return [];
     }
   }
 
   get hasTypeSuggest() {
-     return this.props.manifest && this.props.manifest.suggest && this.props.manifest.suggest.type;
+     return (this.props.service &&
+	     this.props.service.manifest &&
+	     this.props.service.manifest.suggest &&
+	     this.props.service.manifest.suggest.type);
   }
 
   get hasPropertySuggest() {
-     return this.props.manifest && this.props.manifest.suggest && this.props.manifest.suggest.property;
+     return (this.props.service &&
+	     this.props.service.manifest &&
+	     this.props.service.manifest.suggest &&
+	     this.props.service.manifest.suggest.property);
   }
 
   onSubmitReconciliation = (e) => {
      e.preventDefault();
-     if (!this.props.endpoint) {
+     if (!this.props.service || !this.props.service.endpoint) {
         return;
      }
      this.setState({reconResults: 'fetching'});
-     fetchJsonp(this.formulateQueryUrl(), {timeout: 20000})
+     let fetcher = this.props.service.getFetcher();
+     fetcher(this.formulateQueryUrl(), {timeout: 20000})
         .then(result => result.json())
         .then(result =>
            this.setState({
@@ -108,7 +114,7 @@ export default class TestBench extends React.Component {
         return (
           <ListGroup>
             {this.state.reconResults.map(result =>
-              <Candidate candidate={result} manifest={this.props.manifest} />
+              <Candidate candidate={result} manifest={this.props.service.manifest} />
             )}
           </ListGroup>
         );
@@ -136,7 +142,7 @@ export default class TestBench extends React.Component {
   }
 
   formulateQueryUrl() {
-     let baseUrl = this.props.endpoint;
+     let baseUrl = this.props.service.endpoint;
      if (!baseUrl) {
         return '#';
      }
@@ -153,7 +159,7 @@ export default class TestBench extends React.Component {
     let choices = this.defaultTypes.map(t =>
        <Radio
           name="reconcileType"
-          key={t.id}
+          key={"key_"+t.id}
           value={t.id}
           checked={current === t.id}
           onChange={this.onReconTypeChange}>
@@ -170,7 +176,7 @@ export default class TestBench extends React.Component {
            Custom:
            <div>
              <ReconcileSuggest
-                manifest={this.props.manifest}
+                service={this.props.service}
                 entityClass="type"
                 id="recon-custom-type-suggest"
                 value={this.state.reconCustomType} 
@@ -224,7 +230,7 @@ export default class TestBench extends React.Component {
                                 placeholder="Entity to reconcile"
                                 value={this.state.reconQuery}
                                 onChange={this.onReconQueryChange} />
-                                <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.endpoint}>Reconcile</Button></InputGroup.Button>
+                                <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></InputGroup.Button>
                             </InputGroup>
                         </Col>
                     </FormGroup>
@@ -238,7 +244,7 @@ export default class TestBench extends React.Component {
                     <FormGroup controlId="reconcileProperties">
                         <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
                         <Col sm={10}>
-                            <PropertyMapping manifest={this.props.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
+                            <PropertyMapping manifest={this.props.service.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
                         </Col>
                     </FormGroup> : <div/>)}
                     <FormGroup controlId="reconcileLimit">
@@ -274,19 +280,19 @@ export default class TestBench extends React.Component {
                 <FormGroup controlId="suggestEntityTestBench">
                     <Col componentClass={ControlLabel} sm={1}>Entity:</Col>
                     <Col sm={11}>
-                        <ReconcileSuggest manifest={this.props.manifest} entityClass="entity" id="entity-suggest-test" />
+                        <ReconcileSuggest service={this.props.service} entityClass="entity" id="entity-suggest-test" />
                     </Col>
                 </FormGroup>
                 <FormGroup controlId="suggestTypeTestBench">
                     <Col componentClass={ControlLabel} sm={1}>Type:</Col>
                     <Col sm={11}>
-                        <ReconcileSuggest manifest={this.props.manifest} entityClass="type" id="type-suggest-test" />
+                        <ReconcileSuggest service={this.props.service} entityClass="type" id="type-suggest-test" />
                     </Col>
                 </FormGroup>
                 <FormGroup controlId="suggestPropertyTestBench">
                     <Col componentClass={ControlLabel} sm={1}>Property:</Col>
                     <Col sm={11}>
-                        <ReconcileSuggest manifest={this.props.manifest} entityClass="property" id="property-suggest-test" />
+                        <ReconcileSuggest service={this.props.service} entityClass="property" id="property-suggest-test" />
                     </Col>
                 </FormGroup>
               </Form>
