@@ -48,7 +48,7 @@ export default class App extends React.Component {
           <Tab eventKey="servicesList" title="Services">
             <div className="tabContent">
                 <p>This table lists reconciliation services known to <a href="https://www.wikidata.org/">Wikidata</a> and
-                    indicates which features of the <a href="https://github.com/OpenRefine/OpenRefine/wiki/Reconciliation-Service-API">reconciliation API</a> they support.
+                    indicates which features of the <a href="https://reconciliation-api.github.io/specs/latest/">reconciliation API</a> they support.
                 </p>
                 <p>If you are viewing this app over HTTPS it is likely that reconciliation services using HTTP are blocked as "mixed content". You can disable this protection in your browser to load HTTP reconciliation services.</p>
                 <FeatureTable onSelect={this.onEndpointSelect}> 
