@@ -50,7 +50,7 @@ export default class PropertyMapping extends React.Component {
         <div style={{display: 'inline-block', marginBottom: '5px'}} key={idx}>
             <div style={{display: 'inline-block', width: '45%'}}>
                 <ReconcileSuggest
-                   manifest={this.props.manifest}
+                   service={this.props.service}
                    entityClass="property"
                    id={'mapping-property-'+idx}
                    value={mapping.property}
@@ -66,7 +66,7 @@ export default class PropertyMapping extends React.Component {
         </div>
      );
   }
-  
+
   render() {
      return (
         <div>
