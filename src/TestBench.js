@@ -99,7 +99,7 @@ export default class TestBench extends React.Component {
               reconResults: 'failed',
         })});
   }
- 
+
   renderQueryResults() {
      if (this.state.reconResults === 'fetching') {
         return (<div className="resultsPlaceholder">Querying the service...</div>);
@@ -119,7 +119,7 @@ export default class TestBench extends React.Component {
           </ListGroup>
         );
      }
-  }  
+  }
 
   formulateReconQuery() {
      let query = {
@@ -153,7 +153,7 @@ export default class TestBench extends React.Component {
      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
      return url.toString();
   }
- 
+
   renderTypeChoices() {
     let current = this.state.reconType;
     let choices = this.defaultTypes.map(t =>
@@ -179,7 +179,7 @@ export default class TestBench extends React.Component {
                 service={this.props.service}
                 entityClass="type"
                 id="recon-custom-type-suggest"
-                value={this.state.reconCustomType} 
+                value={this.state.reconCustomType}
                 onChange={this.onCustomTypeChange} />
            </div>
         </Radio>);
@@ -214,7 +214,7 @@ export default class TestBench extends React.Component {
         base0E: '#ae81ff',
         base0F: '#cc6633'
         };
-        
+
     return (
        <Tabs defaultActiveKey="reconcile" animation={false} id="test-bench-tabs">
          <Tab eventKey="reconcile" title="Reconcile">
@@ -240,11 +240,11 @@ export default class TestBench extends React.Component {
                             {this.renderTypeChoices()}
                         </Col>
                     </FormGroup>
-                    {(this.hasPropertySuggest ? 
+                    {(this.hasPropertySuggest ?
                     <FormGroup controlId="reconcileProperties">
                         <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
                         <Col sm={10}>
-                            <PropertyMapping manifest={this.props.service.manifest} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
+                            <PropertyMapping service={this.props.service} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
                         </Col>
                     </FormGroup> : <div/>)}
                     <FormGroup controlId="reconcileLimit">
@@ -311,4 +311,4 @@ export default class TestBench extends React.Component {
        </Tabs>
     );
   }
-} 
+}
