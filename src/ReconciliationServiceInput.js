@@ -79,8 +79,17 @@ export default class ReconciliationServiceInput extends React.Component {
   }
 
   getMessage() {
+     let message = '';
      if (this.getValidationState() === 'error') {
-         return 'The endpoint must return a JSONP document describing the service.';
+        message = 'The endpoint MUST return a JSON document describing the service, accessible vîa CORS or JSONP.';
+        let endpoint = this.state.service.endpoint;
+        if (endpoint !== undefined && (
+                endpoint.startsWith('http://')
+                && !endpoint.startsWith('http://localhost')
+                && !endpoint.startsWith('http://127.0.0.1'))) {
+           message += ' The endpoint SHOULD be available over HTTPS. Depending on your browser, this test bench might not be able to test reconciliation services over HTTP.';
+        }
+        return message;
      }
   }
 
