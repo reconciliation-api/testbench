@@ -139,7 +139,7 @@ export default class FeatureTable extends React.Component {
                         wd_uri={row.wd_uri}
                         jsonp={row.jsonp}
                         onSelect={this.props.onSelect}
-                        key={row.endpoint+(row.jsonp ? ' jsonp' : ' cors')} />)
+                        key={row.wd_uri+' '+row.endpoint+(row.jsonp ? ' jsonp' : ' cors')} />)
                }
            </tbody>
         </Table>
