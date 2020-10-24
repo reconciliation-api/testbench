@@ -1,4 +1,5 @@
 import React from 'react';
+import Alert from 'react-bootstrap/lib/Alert';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import Form from 'react-bootstrap/lib/Form';
@@ -14,6 +15,8 @@ import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
 import Candidate from './Candidate.js';
 import JSONTree from 'react-json-tree';
+import Ajv from 'ajv';
+import { manifestSchema, reconResponseBatchSchema } from './JsonSchemas.js';
 
 export default class TestBench extends React.Component {
   constructor() {
@@ -24,8 +27,13 @@ export default class TestBench extends React.Component {
         reconType: 'no-type',
         reconCustomType: undefined,
         reconProperties: [],
-        reconLimit: undefined
+        reconLimit: undefined,
+        reconResponseValidationErrors: []
     };
+
+    this.ajv = new Ajv({allErrors: true});
+    this.manifestSchema = this.ajv.compile(manifestSchema);
+    this.reconResponseSchema = this.ajv.compile(reconResponseBatchSchema);
   }
 
   onReconQueryChange = (e) => {
@@ -91,13 +99,23 @@ export default class TestBench extends React.Component {
         .then(result => result.json())
         .then(result =>
            this.setState({
-              reconResults: result.q0.result
+              reconResults: result.q0.result,
+              reconResponseValidationErrors: this.validateServiceResponse(this.reconResponseSchema, result)
         }))
         .catch(e => {
             this.setState({
               reconError: e.message,
               reconResults: 'failed',
         })});
+  }
+
+  validateServiceResponse(schema, response) {
+     let valid = schema(response);
+     if (!valid) {
+        return schema.errors.map(error => error.dataPath+' '+error.message);
+     } else {
+        return [];
+     }
   }
 
   renderQueryResults() {
@@ -118,6 +136,37 @@ export default class TestBench extends React.Component {
             )}
           </ListGroup>
         );
+     }
+  }
+
+  renderReconResponseValidationErrors() {
+    if (this.state.reconResponseValidationErrors.length === 0) {
+        return (<div />);
+    } else {
+        return (<Alert bsStyle="warning">
+           <strong>Validations error for reconcilation response</strong>
+           <ul>
+           {this.state.reconResponseValidationErrors.map((error, idx) => 
+              <li key={idx}>{error}</li>
+           )}
+          </ul>
+        </Alert>);
+    }
+  }
+
+  renderManifestValidationErrors() {
+     let manifest = this.props.service.manifest;
+     let errors = this.validateServiceResponse(this.manifestSchema, manifest);
+     if (errors.length === 0) {
+        return (<div />);
+     } else {
+        return (<Alert bsStyle="warning">
+           <strong>Validation errors for service manifest</strong>
+           <ul>
+                {errors.map((error, idx) =>
+                  (<li key={idx}>{error}</li>))}
+           </ul>
+        </Alert>);
      }
   }
 
@@ -216,99 +265,103 @@ export default class TestBench extends React.Component {
         };
 
     return (
-       <Tabs defaultActiveKey="reconcile" animation={false} id="test-bench-tabs">
-         <Tab eventKey="reconcile" title="Reconcile">
-            <div className="tabContent">
-              <Col sm={5}>
-                <Form horizontal>
-                    <FormGroup controlId="reconcileName">
-                        <Col componentClass={ControlLabel} sm={2}>Name:</Col>
-                        <Col sm={10}>
-                            <InputGroup>
+       <div>
+        {this.renderManifestValidationErrors()}
+        <Tabs defaultActiveKey="reconcile" animation={false} id="test-bench-tabs">
+            <Tab eventKey="reconcile" title="Reconcile">
+                <div className="tabContent">
+                <Col sm={5}>
+                    <Form horizontal>
+                        <FormGroup controlId="reconcileName">
+                            <Col componentClass={ControlLabel} sm={2}>Name:</Col>
+                            <Col sm={10}>
+                                <InputGroup>
+                                <FormControl
+                                    type="text"
+                                    placeholder="Entity to reconcile"
+                                    value={this.state.reconQuery}
+                                    onChange={this.onReconQueryChange} />
+                                    <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></InputGroup.Button>
+                                </InputGroup>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup controlId="reconcileType">
+                            <Col componentClass={ControlLabel} sm={2}>Type:</Col>
+                            <Col sm={10}>
+                                {this.renderTypeChoices()}
+                            </Col>
+                        </FormGroup>
+                        {(this.hasPropertySuggest ?
+                        <FormGroup controlId="reconcileProperties">
+                            <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
+                            <Col sm={10}>
+                                <PropertyMapping service={this.props.service} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
+                            </Col>
+                        </FormGroup> : <div/>)}
+                        <FormGroup controlId="reconcileLimit">
+                            <Col componentClass={ControlLabel} sm={2}>Limit:</Col>
+                            <Col sm={10}>
                             <FormControl
-                                type="text"
-                                placeholder="Entity to reconcile"
-                                value={this.state.reconQuery}
-                                onChange={this.onReconQueryChange} />
-                                <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></InputGroup.Button>
-                            </InputGroup>
+                                    type="number"
+                                    placeholder="Maximum number of candidates"
+                                    value={this.state.reconLimit}
+                                    onChange={(v) => this.onReconLimitChange(v)} />
+                            </Col>
+                        </FormGroup>
+                    </Form>
+                </Col>
+                <Col sm={3}>
+                    <JSONTree
+                            theme={theme}
+                            data={this.formulateReconQuery()}
+                            getItemString={(type, data, itemType, itemString) => ''}
+                            shouldExpandNode={(keyName, data, level) => true}
+                            hideRoot={true} />
+                    <br />
+                    <a href={this.formulateQueryUrl()} title="See query results on the service" target="_blank" rel="noopener noreferrer">View query results on the service</a>
+                    {this.renderReconResponseValidationErrors()}
+                </Col>
+                <Col sm={4}>
+                    {this.renderQueryResults()}
+                </Col>
+                </div>
+            </Tab>
+            <Tab eventKey="suggest" title="Suggest">
+                <div className="tabContent">
+                <Form horizontal>
+                    <FormGroup controlId="suggestEntityTestBench">
+                        <Col componentClass={ControlLabel} sm={1}>Entity:</Col>
+                        <Col sm={11}>
+                            <ReconcileSuggest service={this.props.service} entityClass="entity" id="entity-suggest-test" />
                         </Col>
                     </FormGroup>
-                    <FormGroup controlId="reconcileType">
-                        <Col componentClass={ControlLabel} sm={2}>Type:</Col>
-                        <Col sm={10}>
-                            {this.renderTypeChoices()}
+                    <FormGroup controlId="suggestTypeTestBench">
+                        <Col componentClass={ControlLabel} sm={1}>Type:</Col>
+                        <Col sm={11}>
+                            <ReconcileSuggest service={this.props.service} entityClass="type" id="type-suggest-test" />
                         </Col>
                     </FormGroup>
-                    {(this.hasPropertySuggest ?
-                    <FormGroup controlId="reconcileProperties">
-                        <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
-                        <Col sm={10}>
-                            <PropertyMapping service={this.props.service} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
-                        </Col>
-                    </FormGroup> : <div/>)}
-                    <FormGroup controlId="reconcileLimit">
-                        <Col componentClass={ControlLabel} sm={2}>Limit:</Col>
-                        <Col sm={10}>
-                           <FormControl
-                                type="number"
-                                placeholder="Maximum number of candidates"
-                                value={this.state.reconLimit}
-                                onChange={(v) => this.onReconLimitChange(v)} />
+                    <FormGroup controlId="suggestPropertyTestBench">
+                        <Col componentClass={ControlLabel} sm={1}>Property:</Col>
+                        <Col sm={11}>
+                            <ReconcileSuggest service={this.props.service} entityClass="property" id="property-suggest-test" />
                         </Col>
                     </FormGroup>
                 </Form>
-              </Col>
-              <Col sm={3}>
-                 <JSONTree
-                        theme={theme}
-                        data={this.formulateReconQuery()}
-                        getItemString={(type, data, itemType, itemString) => ''}
-                        shouldExpandNode={(keyName, data, level) => true}
-                        hideRoot={true} />
-                 <br />
-                 <a href={this.formulateQueryUrl()} title="See query results on the service" target="_blank" rel="noopener noreferrer">View query results on the service</a>
-              </Col>
-              <Col sm={4}>
-                 {this.renderQueryResults()}
-              </Col>
-            </div>
-         </Tab>
-         <Tab eventKey="suggest" title="Suggest">
+                </div>
+            </Tab>
+            <Tab eventKey="preview" title="Preview">
             <div className="tabContent">
-              <Form horizontal>
-                <FormGroup controlId="suggestEntityTestBench">
-                    <Col componentClass={ControlLabel} sm={1}>Entity:</Col>
-                    <Col sm={11}>
-                        <ReconcileSuggest service={this.props.service} entityClass="entity" id="entity-suggest-test" />
-                    </Col>
-                </FormGroup>
-                <FormGroup controlId="suggestTypeTestBench">
-                    <Col componentClass={ControlLabel} sm={1}>Type:</Col>
-                    <Col sm={11}>
-                        <ReconcileSuggest service={this.props.service} entityClass="type" id="type-suggest-test" />
-                    </Col>
-                </FormGroup>
-                <FormGroup controlId="suggestPropertyTestBench">
-                    <Col componentClass={ControlLabel} sm={1}>Property:</Col>
-                    <Col sm={11}>
-                        <ReconcileSuggest service={this.props.service} entityClass="property" id="property-suggest-test" />
-                    </Col>
-                </FormGroup>
-              </Form>
+                    <p>Coming soon</p>
             </div>
-         </Tab>
-         <Tab eventKey="preview" title="Preview">
-           <div className="tabContent">
-                <p>Coming soon</p>
-           </div>
-         </Tab>
-         <Tab eventKey="extend" title="Extend">
-           <div className="tabContent">
-                <p>Coming soon</p>
-           </div>
-         </Tab>
-       </Tabs>
+            </Tab>
+            <Tab eventKey="extend" title="Extend">
+            <div className="tabContent">
+                    <p>Coming soon</p>
+            </div>
+            </Tab>
+        </Tabs>
+       </div>
     );
   }
 }
