@@ -14,11 +14,34 @@ export default class Candidate extends React.Component {
         return view;
      }
 
+     renderDescription() {
+        let description = this.props.candidate.description;
+        if (description !== undefined) {
+          return (<span><br />{description}</span>);
+        } else {
+           return (<span />);
+        }
+     }
+
+     renderTypes() {
+        let types = this.props.candidate.type;
+        if (types !== undefined) {
+          return (<span><br />
+              {types.map((type, idx) => [
+                  idx > 0 && ", ",
+                  type.name + ' (' + type.id + ')'
+               ])}
+          </span>);
+        }
+     }
+
      render() {
         let candidate = this.props.candidate;
         return (<ListGroupItem key={candidate.id} header={candidate.name} active={candidate.match}>
                 <a href={this.url}>{candidate.id}</a>
                 <Badge style={{float: 'right'}}>{this.props.candidate.score}</Badge>
+                {this.renderDescription()}
+                {this.renderTypes()}
             </ListGroupItem>);
      }
 }
