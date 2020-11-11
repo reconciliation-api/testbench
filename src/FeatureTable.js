@@ -36,6 +36,7 @@ export default class FeatureTable extends React.Component {
         "     pq:P2700 wd:Q64490175.\n"+
         "  OPTIONAL { ?statement (pq:P973 | pq:P2078) ?documentation }\n" +
         "  OPTIONAL { ?statement pq:P1324 ?source }\n" +
+        "  FILTER NOT EXISTS { ?statement wikibase:rank wikibase:DeprecatedRank }\n" +
         "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n" +
         "}\n" +
         "ORDER BY DESC(?endpoint)\n");
