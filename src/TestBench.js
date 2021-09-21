@@ -212,7 +212,8 @@ export default class TestBench extends React.Component {
           value={t.id}
           checked={current === t.id}
           onChange={this.onReconTypeChange}>
-        {t.name}<br /><span className="reconTypeId">{t.id}</span>
+        {t.name}<br />
+        {t.broader && <span className="reconTypeId">{t.broader} &gt; </span>}<span className="reconTypeId">{t.id}</span>
       </Radio>
     );
     if (this.hasTypeSuggest) {
