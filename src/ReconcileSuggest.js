@@ -84,7 +84,7 @@ export default class ReconcileSuggest extends React.Component {
            renderMenuItemChildren={(option, props, index) => 
               <>
                  <span className="suggestItemId">{option.id}</span>
-                 {option.broader && <span className="suggestItemId">{option.broader} &gt; </span>}
+                 {Array.isArray(option.broader) && option.broader.length && <span className="suggestItemId">{option.broader.join(', ')} &gt; </span>}
                  <span className="suggestItemLabel">{option.name}</span><br />
                  <span className="suggestItemDescription">{option.description}</span>
               </>
