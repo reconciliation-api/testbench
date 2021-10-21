@@ -291,13 +291,12 @@ export default class TestBench extends React.Component {
                                 {this.renderTypeChoices()}
                             </Col>
                         </FormGroup>
-                        {(this.hasPropertySuggest ?
                         <FormGroup controlId="reconcileProperties">
                             <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
                             <Col sm={10}>
                                 <PropertyMapping service={this.props.service} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
                             </Col>
-                        </FormGroup> : <div/>)}
+                        </FormGroup>
                         <FormGroup controlId="reconcileLimit">
                             <Col componentClass={ControlLabel} sm={2}>Limit:</Col>
                             <Col sm={10}>
