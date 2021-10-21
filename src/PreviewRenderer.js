@@ -1,10 +1,6 @@
 import React from 'react';
 
 export default class PreviewRenderer extends React.Component {
-  constructor() {
-    super();
-  }
-
   iframe = function() {
     const iframeUrl = this.props.settings.url.replace('{{id}}', encodeURIComponent(this.props.id));
     if (!Number.isInteger(this.props.settings.height) || !Number.isInteger(this.props.settings.width)) {
