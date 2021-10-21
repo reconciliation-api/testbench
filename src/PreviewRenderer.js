@@ -7,6 +7,9 @@ export default class PreviewRenderer extends React.Component {
 
   iframe = function() {
     const iframeUrl = this.props.settings.url.replace('{{id}}', encodeURIComponent(this.props.id));
+    if (!Number.isInteger(this.props.settings.height) || !Number.isInteger(this.props.settings.width)) {
+        return {__html:`<p>The manifest must provide the width and height of the preview iframe as integers.</p>`};
+    }
     try {
         new URL(iframeUrl);
         // we have a valid URL
