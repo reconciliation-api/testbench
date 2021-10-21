@@ -39,7 +39,7 @@ export default class App extends React.Component {
   render() {
     let testBench = <div />;
     if (this.state.service && this.state.service.endpoint) {
-        testBench = <TestBench service={this.state.service} key={this.state.service.endpoint} />;
+        testBench = <TestBench service={this.state.service} key={'testbench-'+this.state.service.endpoint} />;
     }
     return (
       <div className="App" style={{margin: '20px'}}>

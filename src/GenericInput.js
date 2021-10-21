@@ -42,7 +42,7 @@ export default class GenericInput extends React.Component {
         if (this.props.onChange === undefined) {
            return this.state.value;
         } else {
-           return this.props.value;
+           return this.props.value || this.state.value;
         }
     }
 
@@ -68,14 +68,17 @@ export default class GenericInput extends React.Component {
                 name: e.currentTarget.value
         };
         if (this.props.onChange === undefined) {
-            this.setState(newValue);
+            this.setState({ value: newValue });
         } else if (this.props.explicitSubmit === undefined) {
             this.props.onChange(newValue);
+        } else {
+            this.setState({ value: newValue });
         }
     } 
 
     onSubmit = (e) => {
-        this.props.onChange(this.props.onChange === undefined ? this.state.value : this.props.value);
+        this.props.onChange(this.state.value);
+        e.preventDefault();
     }
 
     render() {
@@ -90,7 +93,7 @@ export default class GenericInput extends React.Component {
                       value={this.currentId || ''} 
                       onChange={this.onIdChange} />
                     <InputGroup.Button>
-                        <Button onClick={this.onSubmit} type="submit" bsStyle="primary" />
+                        <Button onClick={this.onSubmit} type="submit" bsStyle="primary">Submit</Button>
                     </InputGroup.Button>
                 </InputGroup>
                 : 
