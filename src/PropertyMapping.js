@@ -2,7 +2,7 @@
 import React from 'react';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Button from 'react-bootstrap/lib/Button';
-import ReconcileSuggest from './ReconcileSuggest.js';
+import GenericInput from './GenericInput.js';
 
 export default class PropertyMapping extends React.Component {
 
@@ -49,7 +49,7 @@ export default class PropertyMapping extends React.Component {
      return this.props.value.map((mapping, idx) =>
         <div style={{display: 'inline-block', marginBottom: '5px'}} key={idx}>
             <div style={{display: 'inline-block', width: '45%'}}>
-                <ReconcileSuggest
+                <GenericInput
                    service={this.props.service}
                    entityClass="property"
                    id={'mapping-property-'+idx}
