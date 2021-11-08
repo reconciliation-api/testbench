@@ -14,6 +14,8 @@ import ListGroup from 'react-bootstrap/lib/ListGroup';
 import ReconcileSuggest from './ReconcileSuggest.js';
 import PropertyMapping from './PropertyMapping.js';
 import Candidate from './Candidate.js';
+import GenericInput from './GenericInput.js';
+import PreviewRenderer from './PreviewRenderer.js';
 import JSONTree from 'react-json-tree';
 import Ajv from 'ajv';
 import { manifestSchema, reconResponseBatchSchema } from './JsonSchemas.js';
@@ -28,7 +30,8 @@ export default class TestBench extends React.Component {
         reconCustomType: undefined,
         reconProperties: [],
         reconLimit: undefined,
-        reconResponseValidationErrors: []
+        reconResponseValidationErrors: [],
+        previewEntityId : undefined
     };
 
     this.ajv = new Ajv({allErrors: true});
@@ -66,6 +69,12 @@ export default class TestBench extends React.Component {
     });
   }
 
+  onPreviewEntityChange = (value) => {
+    this.setState({
+        previewEntityId: value !== undefined ? value.id : undefined
+    });
+  };
+
   get defaultTypes() {
      if (this.props.service && this.props.service.manifest) {
         return this.props.service.manifest.defaultTypes || [];
@@ -87,6 +96,12 @@ export default class TestBench extends React.Component {
 	     this.props.service.manifest.suggest &&
 	     this.props.service.manifest.suggest.property);
   }
+
+  get hasPreviewService() {
+     return (this.props.service &&
+             this.props.service.manifest &&
+             this.props.service.manifest.preview);
+  } 
 
   onSubmitReconciliation = (e) => {
      e.preventDefault();
@@ -351,7 +366,19 @@ export default class TestBench extends React.Component {
             </Tab>
             <Tab eventKey="preview" title="Preview">
             <div className="tabContent">
-                    <p>Coming soon</p>
+                {(this.hasPreviewService ?
+                  <div>
+                    <Form horizontal>
+                        <FormGroup controlId="suggestEntityTestBench">
+                            <Col componentClass={ControlLabel} sm={1}>Entity:</Col>
+                            <Col sm={11}>
+                                <GenericInput service={this.props.service} entityClass="entity" id="entity-input-preview" explicitSubmit onChange={this.onPreviewEntityChange} />
+                            </Col>
+                        </FormGroup>
+                    </Form>
+                    <PreviewRenderer id={this.state.previewEntityId} settings={this.props.service.manifest.preview} />
+                 </div>
+                 : <p>Previewing is not supported by the service.</p>)}
             </div>
             </Tab>
             <Tab eventKey="extend" title="Extend">
