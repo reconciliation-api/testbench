@@ -16,9 +16,11 @@ import PropertyMapping from './PropertyMapping.js';
 import Candidate from './Candidate.js';
 import GenericInput from './GenericInput.js';
 import PreviewRenderer from './PreviewRenderer.js';
+import DataExtensionTab from './DataExtensionTab.js';
 import JSONTree from 'react-json-tree';
 import Ajv from 'ajv';
 import { manifestSchema, reconResponseBatchSchema } from './JsonSchemas.js';
+import { jsonTheme } from './utils.js';
 
 export default class TestBench extends React.Component {
   constructor() {
@@ -102,6 +104,12 @@ export default class TestBench extends React.Component {
              this.props.service.manifest &&
              this.props.service.manifest.preview);
   } 
+
+  get hasDataExtension() {
+     return (this.props.service &&
+             this.props.service.manifest &&
+             this.props.service.manifest.extend);
+  }
 
   onSubmitReconciliation = (e) => {
      e.preventDefault();
@@ -258,27 +266,6 @@ export default class TestBench extends React.Component {
   }
 
   render() {
-    const theme = {
-       scheme: 'monokai',
-        author: 'wimer hazenberg (http://www.monokai.nl)',
-        base00: '#000000', // '#272822',
-        base01: '#383830',
-        base02: '#49483e',
-        base03: '#75715e',
-        base04: '#a59f85',
-        base05: '#00ff00', //'#f8f8f2',
-        base06: '#f5f4f1',
-        base07: '#f9f8f5',
-        base08: '#f92672',
-        base09: '#fd971f',
-        base0A: '#f4bf75',
-        base0B: '#a6e22e',
-        base0C: '#a1efe4',
-        base0D: '#66d9ef',
-        base0E: '#ae81ff',
-        base0F: '#cc6633'
-        };
-
     return (
        <div>
         {this.renderManifestValidationErrors()}
@@ -326,7 +313,7 @@ export default class TestBench extends React.Component {
                 </Col>
                 <Col sm={3}>
                     <JSONTree
-                            theme={theme}
+                            theme={jsonTheme}
                             data={this.formulateReconQuery()}
                             getItemString={(type, data, itemType, itemString) => ''}
                             shouldExpandNode={(keyName, data, level) => true}
@@ -364,7 +351,7 @@ export default class TestBench extends React.Component {
                 </Form>
                 </div>
             </Tab>
-            <Tab eventKey="preview" title="Preview">
+            <Tab eventKey="preview" title="Preview" disabled={!this.hasPreviewService}>
             <div className="tabContent">
                 {(this.hasPreviewService ?
                   <div>
@@ -381,9 +368,11 @@ export default class TestBench extends React.Component {
                  : <p>Previewing is not supported by the service.</p>)}
             </div>
             </Tab>
-            <Tab eventKey="extend" title="Extend">
+            <Tab eventKey="extend" title="Extend" disabled={!this.hasDataExtension}>
             <div className="tabContent">
-                    <p>Coming soon</p>
+                {(this.hasDataExtension ?
+                    <DataExtensionTab service={this.props.service} />
+                 : <p>Data extension is not supported by the service.</p>)}
             </div>
             </Tab>
         </Tabs>
