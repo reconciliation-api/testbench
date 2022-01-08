@@ -10,8 +10,7 @@ import GenericInput from './GenericInput.js';
 import DataExtensionValue from './DataExtensionValue.js';
 import JSONTree from 'react-json-tree';
 import {jsonTheme} from './utils.js';
-import Ajv from 'ajv';
-import { dataExtensionResponseSchema } from './JsonSchemas.js';
+import { getSchema } from './JsonValidator.js';
 
 export default class DataExtensionTab extends React.Component {
 
@@ -23,8 +22,6 @@ export default class DataExtensionTab extends React.Component {
         extendResults: undefined,
         validationErrors: []
       };
-      this.ajv = new Ajv({allErrors: true});
-      this.schema = this.ajv.compile(dataExtensionResponseSchema);
   }
 
   onEntityChange = (newValue) => {
@@ -131,9 +128,10 @@ export default class DataExtensionTab extends React.Component {
   }
 
   validateServiceResponse(response) {
-        let valid = this.schema(response);
+	let schema = getSchema(this.props.service.latestCompatibleVersion, 'data-extension-response'); 
+        let valid = schema(response);
         if (!valid) {
-             return this.schema.errors.map(error => error.dataPath+' '+error.message);
+             return schema.errors.map(error => error.dataPath+' '+error.message);
         } else {
              return [];
         }
