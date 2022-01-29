@@ -18,8 +18,7 @@ import GenericInput from './GenericInput.js';
 import PreviewRenderer from './PreviewRenderer.js';
 import DataExtensionTab from './DataExtensionTab.js';
 import JSONTree from 'react-json-tree';
-import Ajv from 'ajv';
-import { manifestSchema, reconResponseBatchSchema } from './JsonSchemas.js';
+import { getSchema } from './JsonValidator.js';
 import { jsonTheme } from './utils.js';
 
 export default class TestBench extends React.Component {
@@ -35,10 +34,6 @@ export default class TestBench extends React.Component {
         reconResponseValidationErrors: [],
         previewEntityId : undefined
     };
-
-    this.ajv = new Ajv({allErrors: true});
-    this.manifestSchema = this.ajv.compile(manifestSchema);
-    this.reconResponseSchema = this.ajv.compile(reconResponseBatchSchema);
   }
 
   onReconQueryChange = (e) => {
@@ -123,7 +118,7 @@ export default class TestBench extends React.Component {
         .then(result =>
            this.setState({
               reconResults: result.q0.result,
-              reconResponseValidationErrors: this.validateServiceResponse(this.reconResponseSchema, result)
+              reconResponseValidationErrors: this.validateServiceResponse('reconciliation-response-batch', result)
         }))
         .catch(e => {
             this.setState({
@@ -132,7 +127,8 @@ export default class TestBench extends React.Component {
         })});
   }
 
-  validateServiceResponse(schema, response) {
+  validateServiceResponse(schemaName, response) {
+     let schema = getSchema(this.props.service.latestCompatibleVersion, schemaName);
      let valid = schema(response);
      if (!valid) {
         return schema.errors.map(error => error.dataPath+' '+error.message);
@@ -179,7 +175,7 @@ export default class TestBench extends React.Component {
 
   renderManifestValidationErrors() {
      let manifest = this.props.service.manifest;
-     let errors = this.validateServiceResponse(this.manifestSchema, manifest);
+     let errors = this.validateServiceResponse('manifest', manifest);
      if (errors.length === 0) {
         return (<div />);
      } else {

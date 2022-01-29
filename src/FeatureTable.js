@@ -120,6 +120,7 @@ export default class FeatureTable extends React.Component {
              <tr>
                <td>Name</td>
                <td>Endpoint</td>
+	       <td>API version</td>
                <td>CORS</td>
                <td>JSONP</td>
                <td>View entities</td>

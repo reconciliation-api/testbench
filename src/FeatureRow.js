@@ -79,6 +79,10 @@ export default class FeatureRow extends React.Component {
       return 'extend' in this.state.manifest;
    }
 
+   reconciliationService() {
+      return new ReconciliationService(this.props.endpoint, this.state.manifest, this.state.reacheableCORS);
+   }
+
    nameCell() {
       let parts = [
         <span key='name'>{this.props.name}</span>
@@ -104,7 +108,7 @@ export default class FeatureRow extends React.Component {
 
    triggerOnSelect = () => {
       if (this.props.onSelect) {
-        this.props.onSelect(new ReconciliationService(this.props.endpoint, this.state.manifest, this.state.reacheableCORS));
+        this.props.onSelect(this.reconciliationService());
       }
    }
 
@@ -113,6 +117,7 @@ export default class FeatureRow extends React.Component {
         <tr>
             <td>{this.nameCell()}</td>
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench" disabled={!this.isReacheable}><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
+	    <td className={'featureCell'}>{this.reconciliationService().latestCompatibleVersion || '?'}</td>
             <FeatureCell value={this.state.reacheableCORS} />
             <FeatureCell value={this.state.reacheableJSONP} onClick={this.checkJsonp} />
             <FeatureCell value={this.hasView()} />
