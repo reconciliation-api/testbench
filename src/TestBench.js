@@ -118,7 +118,7 @@ export default class TestBench extends React.Component {
         .then(result =>
            this.setState({
               reconResults: result.q0.result,
-              reconResponseValidationErrors: this.validateServiceResponse('reconciliation-response-batch', result)
+              reconResponseValidationErrors: this.validateServiceResponse('reconciliation-result-batch', result)
         }))
         .catch(e => {
             this.setState({
