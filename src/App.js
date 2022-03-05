@@ -44,6 +44,7 @@ export default class App extends React.Component {
     return (
       <div className="App" style={{margin: '20px'}}>
         <h1>Reconciliation service test bench</h1>
+        <p style={{float: 'right'}}><a href="https://github.com/reconciliation-api/testbench">Source repository</a></p>
         <Tabs activeKey={this.state.openTab} onSelect={this.handleTabSelect} animation={false} id="main-tabs">
           <Tab eventKey="servicesList" title="Services">
             <div className="tabContent">
