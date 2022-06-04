@@ -19,6 +19,15 @@ export default class ReconciliationServiceInput extends React.Component {
      this.timer = null;
   }
 
+  componentDidMount() {
+    console.log('hey do we need to validate');
+    console.log(this.props.initialService);
+    if (this.props.initialService.endpoint && !this.props.initialService.manifest) {
+      console.log('validating endpoint at start');
+      this.validateEndpoint();
+    }
+  }
+
   setService(service) {
      this.setState({
 	service: service
