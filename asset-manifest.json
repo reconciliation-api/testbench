@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/testbench/static/css/main.ecb93d9d.chunk.css",
-    "main.js": "/testbench/static/js/main.dfc1c8c1.chunk.js",
-    "main.js.map": "/testbench/static/js/main.dfc1c8c1.chunk.js.map",
+    "main.js": "/testbench/static/js/main.cbb480f6.chunk.js",
+    "main.js.map": "/testbench/static/js/main.cbb480f6.chunk.js.map",
     "runtime~main.js": "/testbench/static/js/runtime~main.09e70599.js",
     "runtime~main.js.map": "/testbench/static/js/runtime~main.09e70599.js.map",
-    "static/css/2.8604e687.chunk.css": "/testbench/static/css/2.8604e687.chunk.css",
-    "static/js/2.7bf7519c.chunk.js": "/testbench/static/js/2.7bf7519c.chunk.js",
-    "static/js/2.7bf7519c.chunk.js.map": "/testbench/static/js/2.7bf7519c.chunk.js.map",
+    "static/css/2.a1ef10d7.chunk.css": "/testbench/static/css/2.a1ef10d7.chunk.css",
+    "static/js/2.855e931d.chunk.js": "/testbench/static/js/2.855e931d.chunk.js",
+    "static/js/2.855e931d.chunk.js.map": "/testbench/static/js/2.855e931d.chunk.js.map",
     "index.html": "/testbench/index.html",
-    "precache-manifest.301a78ea0317ec28896b276c84f95b9b.js": "/testbench/precache-manifest.301a78ea0317ec28896b276c84f95b9b.js",
+    "precache-manifest.2afbbf6f3d548f6ae33cf86735db34d7.js": "/testbench/precache-manifest.2afbbf6f3d548f6ae33cf86735db34d7.js",
     "service-worker.js": "/testbench/service-worker.js",
-    "static/css/2.8604e687.chunk.css.map": "/testbench/static/css/2.8604e687.chunk.css.map",
+    "static/css/2.a1ef10d7.chunk.css.map": "/testbench/static/css/2.a1ef10d7.chunk.css.map",
     "static/css/main.ecb93d9d.chunk.css.map": "/testbench/static/css/main.ecb93d9d.chunk.css.map",
     "static/media/bootstrap.min.css": "/testbench/static/media/glyphicons-halflings-regular.fa277232.woff"
   }
