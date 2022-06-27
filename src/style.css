@@ -78,3 +78,11 @@
 div .radio label {
     width: 100%;
 }
+
+.candidateField {
+    font-weight: bold;
+}
+
+.candidateValue {
+    margin-left: 1.5em;
+}
