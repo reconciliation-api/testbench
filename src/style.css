@@ -71,7 +71,7 @@
 
 /* Candidates */
 
-.active > .list-group-item-text > a {
+.list-group-item.active a {
    color: white;
 }
 
