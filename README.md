@@ -1,9 +1,8 @@
 Reconciliation service test bench
 =================================
 
-This web application can be used to play with OpenRefine reconciliation services.
-It is meant to be a companion to the [W3C Entity Reconciliation Community Group](https://www.w3.org/community/reconciliation/)
-to assess the current usage of the [OpenRefine reconciliation API](https://github.com/OpenRefine/OpenRefine/wiki/Reconciliation-Service-API).
+This web application can be used to access and play with the reconciliation services described in the [Reconciliation API specifications](https://github.com/reconciliation-api/specs).
+It is meant to be a companion to the [W3C Entity Reconciliation Community Group](https://www.w3.org/community/reconciliation/).
 
 This application is developed with React and calls to the reconciliation services are made directly from the browser.
 It can be used at:
