@@ -1,5 +1,5 @@
 
-import { fetchJsonpParams, fetchParams } from './utils.js';
+import { fetchJsonpParams, fetchParams , postParams , postJsonpParams } from './utils.js';
 import { specVersions } from './JsonSchemas.js';
 import { getSchema } from './JsonValidator.js';
 
@@ -24,6 +24,10 @@ export default class ReconciliationService {
     getFetcher() {
        return this.cors ? fetchParams : fetchJsonpParams;
     }
+    
+    postFetcher() {
+      return this.cors ? postParams : postJsonpParams;
+   }
 }
 
 

@@ -112,8 +112,8 @@ export default class TestBench extends React.Component {
         return;
      }
      this.setState({reconResults: 'fetching'});
-     let fetcher = this.props.service.getFetcher();
-     fetcher(this.formulateQueryUrl(), {timeout: 20000})
+     let fetcher = this.props.service.postFetcher();
+     fetcher({url:this.props.service.endpoint,queries:JSON.stringify({q0: this.formulateReconQuery()})})
         .then(result => result.json())
         .then(result =>
            this.setState({
