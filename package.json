@@ -1,7 +1,7 @@
 {
   "name": "reconciliation-testbench",
   "homepage": "https://reconciliation-api.github.io/testbench",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "ajv": "^8.12.0",
