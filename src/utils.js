@@ -17,6 +17,31 @@ export const fetchParams = (baseUrl, params) => {
    return fetch(addParams(baseUrl, params));
 }
 
+export const postJsonpParams = ({url,queries}) => {
+   return fetchJsonp(url, {
+      method: 'POST',
+      headers: {
+         'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+         queries
+       })
+   });
+}
+
+
+export const postParams = ({url,queries}) => {
+   return fetch(url, {
+   method:"POST",
+   headers: {
+     'Content-Type': 'application/x-www-form-urlencoded'
+   },
+   body: new URLSearchParams({
+     queries
+   })
+});
+}
+
 export const jsonTheme = {
     scheme: 'monokai',
     author: 'wimer hazenberg (http://www.monokai.nl)',
