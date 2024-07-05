@@ -19,11 +19,11 @@ import PreviewRenderer from './PreviewRenderer.js';
 import DataExtensionTab from './DataExtensionTab.js';
 import JSONTree from 'react-json-tree';
 import { getSchema } from './JsonValidator.js';
-import { jsonTheme } from './utils.js';
+import { jsonTheme, specVersions } from './utils.js';
 
 export default class TestBench extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
         reconQuery: '',
@@ -34,6 +34,7 @@ export default class TestBench extends React.Component {
         reconResponseValidationErrors: [],
         previewEntityId : undefined
     };
+    this.manifestVersions = props.service.manifest?.versions?.length > 0 ? props.service.manifest.versions : null;
   }
 
   onReconQueryChange = (e) => {
@@ -113,11 +114,11 @@ export default class TestBench extends React.Component {
      }
      this.setState({reconResults: 'fetching'});
      let fetcher = this.props.service.postFetcher();
-     fetcher({url:this.props.service.endpoint,queries:JSON.stringify({q0: this.formulateReconQuery()})})
+     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.manifestVersions)),manifestVersion:this.manifestVersions})
         .then(result => result.json())
         .then(result =>
            this.setState({
-              reconResults: result.q0.result,
+              reconResults: result?.results?.[0]?.candidates ?? result?.q0?.result ?? [],
               reconResponseValidationErrors: this.validateServiceResponse('reconciliation-result-batch', result)
         }))
         .catch(e => {
@@ -189,33 +190,58 @@ export default class TestBench extends React.Component {
      }
   }
 
-  formulateReconQuery() {
-     let query = {
-        query: this.state.reconQuery,
-     };
-     if (this.state.reconType === 'custom-type' && this.state.reconCustomType !== undefined) {
-        query.type = this.state.reconCustomType.id;
-     } else if (this.state.reconType !== 'no-type') {
-        query.type = this.state.reconType;
-     }
-     if (this.state.reconProperties.length > 0) {
-        query.properties = this.state.reconProperties
-           .filter(m => m !== undefined && m.property && m.value)
-           .map(m => {return {pid: m.property.id, v: m.value}})
-     }
-     if (!isNaN(parseInt(this.state.reconLimit))) {
-        query.limit = parseInt(this.state.reconLimit);
-     }
-     return query;
-  }
+  formulateReconQuery(manifestVersion) {
+    const isCustomType = this.state.reconType === "custom-type" && this.state.reconCustomType !== undefined;
+    const isNotNoType = this.state.reconType !== "no-type";
+    const hasReconProperties = this.state.reconProperties.length > 0;
+    const reconLimit = parseInt(this.state.reconLimit);
+    const isLimitValid = !isNaN(reconLimit);
+
+    const buildConditions = () => {
+        let conditions = [{ matchType: "name", v: this.state.reconQuery }];
+        if (hasReconProperties) {
+            const properties = this.state.reconProperties
+                .filter(m => m && m.property && m.value)
+                .map(m => ({ matchType: "property", pid: m.property.id, v: m.value }));
+            conditions = conditions.concat(properties);
+        }
+        return conditions;
+    };
+
+    const buildQuery = () => {
+        const query = { query: this.state.reconQuery };
+        if (isCustomType) query.type = this.state.reconCustomType.id;
+        else if (isNotNoType) query.type = this.state.reconType;
+        if (hasReconProperties) {
+            query.properties = this.state.reconProperties
+                .filter(m => m && m.property && m.value)
+                .map(m => ({ pid: m.property.id, v: m.value }));
+        }
+        if (isLimitValid) query.limit = reconLimit;
+        return query;
+    };
+
+    if (manifestVersion?.includes(specVersions["0.3"])) {
+        return {
+            queries: [{
+                ...(isCustomType ? { type: this.state.reconCustomType.id } : isNotNoType ? { type: this.state.reconType } : {}),
+                ...(isLimitValid && { limit: this.state.reconLimit }),
+                conditions: buildConditions()
+              }]
+        };
+    } else {
+        return { q0: buildQuery() };
+    }
+}
 
   formulateQueryUrl() {
      let baseUrl = this.props.service.endpoint;
      if (!baseUrl) {
         return '#';
      }
+
      let params = {
-        queries: JSON.stringify({q0: this.formulateReconQuery()})
+        queries: JSON.stringify( this.formulateReconQuery(this.manifestVersions))
      };
      let url = new URL(baseUrl);
      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
@@ -311,7 +337,7 @@ export default class TestBench extends React.Component {
                 <Col sm={3}>
                     <JSONTree
                             theme={jsonTheme}
-                            data={this.formulateReconQuery()}
+                            data={this.formulateReconQuery(this.manifestVersions)}
                             getItemString={(type, data, itemType, itemString) => ''}
                             shouldExpandNode={(keyName, data, level) => true}
                             hideRoot={true} />
