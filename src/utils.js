@@ -36,17 +36,45 @@ export const postJsonpParams = ({url,queries}) => {
 }
 
 
-export const postParams = ({url,queries}) => {
-   return fetch(url, {
-   method:"POST",
-   headers: {
-     'Content-Type': 'application/x-www-form-urlencoded'
-   },
-   body: new URLSearchParams({
-     queries
-   })
-});
-}
+export const postParams = ({
+   url,
+   queries,
+   manifestVersion = [specVersions["0.2"]],
+ }) => {
+   let currentManifestVersion = specVersions["0.2"];
+   if(manifestVersion?.includes(specVersions["0.3"])) currentManifestVersion = specVersions["0.3"];
+   switch (currentManifestVersion) {
+     
+     case "0.2":
+       return fetch(url, {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/x-www-form-urlencoded",
+         },
+         body: new URLSearchParams({
+           queries,
+         }),
+       });
+     case "0.3":
+       return fetch(url, {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+         },
+         body:queries,
+       });
+       default:
+         return fetch(url, {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/x-www-form-urlencoded",
+           },
+           body: new URLSearchParams({
+             queries,
+           }),
+         });
+   }
+ };
 
 export const jsonTheme = {
     scheme: 'monokai',
