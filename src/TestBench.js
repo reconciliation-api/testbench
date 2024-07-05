@@ -34,7 +34,6 @@ export default class TestBench extends React.Component {
         reconResponseValidationErrors: [],
         previewEntityId : undefined
     };
-    this.manifestVersions = props.service.manifest?.versions?.length > 0 ? props.service.manifest.versions : null;
   }
 
   componentDidUpdate(prevProps, prevState) {
