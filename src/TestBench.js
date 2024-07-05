@@ -37,6 +37,12 @@ export default class TestBench extends React.Component {
     this.manifestVersions = props.service.manifest?.versions?.length > 0 ? props.service.manifest.versions : null;
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps?.service?.endpoint !== this.props.service.endpoint) {
+        this.formulateReconQuery(this.props.service.manifest.versions)
+    }
+}
+
   onReconQueryChange = (e) => {
     this.setState({
         reconQuery: e.currentTarget.value
@@ -114,7 +120,7 @@ export default class TestBench extends React.Component {
      }
      this.setState({reconResults: 'fetching'});
      let fetcher = this.props.service.postFetcher();
-     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.manifestVersions)),manifestVersion:this.manifestVersions})
+     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.props.service.manifest.versions)),manifestVersion:this.props.service.manifest.versions})
         .then(result => result.json())
         .then(result =>
            this.setState({
@@ -241,7 +247,7 @@ export default class TestBench extends React.Component {
      }
 
      let params = {
-        queries: JSON.stringify( this.formulateReconQuery(this.manifestVersions))
+        queries: JSON.stringify( this.formulateReconQuery(this.props.service.manifest.versions))
      };
      let url = new URL(baseUrl);
      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
@@ -337,7 +343,7 @@ export default class TestBench extends React.Component {
                 <Col sm={3}>
                     <JSONTree
                             theme={jsonTheme}
-                            data={this.formulateReconQuery(this.manifestVersions)}
+                            data={this.formulateReconQuery(this.props.service.manifest.versions)}
                             getItemString={(type, data, itemType, itemString) => ''}
                             shouldExpandNode={(keyName, data, level) => true}
                             hideRoot={true} />
