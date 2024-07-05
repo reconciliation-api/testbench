@@ -1,6 +1,12 @@
 
 import fetchJsonp from 'fetch-jsonp';
 
+export const specVersions={
+"0.1":"0.1",
+"0.2":"0.2",
+"0.3":"0.3",
+"draft":"draft",
+}
 const addParams = (baseUrl, params) => {
    let url = new URL(baseUrl);
    if (params) {
