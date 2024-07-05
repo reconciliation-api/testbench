@@ -86,3 +86,25 @@ div .radio label {
 .candidateValue {
     margin-left: 1.5em;
 }
+
+.candidateMultilingualNames{
+   display: grid;
+   margin-left: 1.5em;
+}
+
+.candidate-main-title{
+   display: flex;
+   gap:8px
+}
+
+.candidate-main-title-lang-bold,.candidate-main-title-str-bold{
+   font-weight: bold;
+}
+
+.candidate-main-title-lang-bold,.candidate-main-title-lang{
+   color:#ababab
+}  
+
+.candidate-description-wrapper{
+   margin-left: 1.5em;
+}
