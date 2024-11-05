@@ -6,7 +6,7 @@ export const specVersions={
 "0.2":"0.2",
 "0.3":"0.3",
 "draft":"draft",
-"v1.0-draft":"v1.0-draft",
+"1.0-draft":"1.0-draft",
 }
 const addParams = (baseUrl, params) => {
    let url = new URL(baseUrl);
@@ -43,7 +43,7 @@ export const postParams = ({
    manifestVersion = [specVersions["0.2"]],
  }) => {
    let currentManifestVersion = specVersions["0.2"];
-   if(manifestVersion?.includes(specVersions["v1.0-draft"])) currentManifestVersion = specVersions["v1.0-draft"];
+   if(manifestVersion?.includes(specVersions["1.0-draft"])) currentManifestVersion = specVersions["1.0-draft"];
    switch (currentManifestVersion) {
      
      case "0.2":
@@ -56,7 +56,7 @@ export const postParams = ({
            queries,
          }),
        });
-     case "v1.0-draft":
+     case "1.0-draft":
        return fetch(url, {
          method: "POST",
          headers: {
