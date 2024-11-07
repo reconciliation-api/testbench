@@ -226,7 +226,7 @@ export default class TestBench extends React.Component {
         return query;
     };
 
-    if (manifestVersion?.includes(specVersions["v1.0-draft"])) {
+    if (manifestVersion?.includes(specVersions["1.0-draft"])) {
         return {
             queries: [{
                 ...(isCustomType ? { type: this.state.reconCustomType.id } : isNotNoType ? { type: this.state.reconType } : {}),
