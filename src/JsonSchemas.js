@@ -6,7 +6,7 @@
 export const specVersions = [
 "0.1",
 "0.2",
-"draft",
+"1.0-draft",
 ];
 
 export const specSchemas = {
@@ -3277,7 +3277,7 @@ export const specSchemas = {
 }
 ,
 },
-"draft": {
+"1.0-draft": {
 "data-extension-property-proposal":
 {
   "$schema": "http://json-schema.org/schema#",
@@ -3447,6 +3447,9 @@ export const specSchemas = {
                           },
                           "lang": {
                             "type": "string"
+                          },
+                          "dir": {
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -3462,6 +3465,9 @@ export const specSchemas = {
                             "type": "string"
                           },
                           "lang": {
+                            "type": "string"
+                          },
+                          "dir": {
                             "type": "string"
                           }
                         },
@@ -3538,20 +3544,12 @@ export const specSchemas = {
         "type": "string"
       },
       "contains": {
-        "enum": ["0.2"]
+        "enum": ["1.0-draft"]
       }
     },
     "name": {
       "type": "string",
       "description": "A human-readable name for the service or data source"
-    },
-    "identifierSpace": {
-      "type": "string",
-      "description": "A URI describing the entity identifiers used in this service"
-    },
-    "schemaSpace": {
-      "type": "string",
-      "description": "A URI describing the schema used in this service"
     },
     "documentation": {
       "type": "string",
@@ -3581,7 +3579,7 @@ export const specSchemas = {
         "url"
       ]
     },
-    "feature_view": {
+    "featureView": {
       "type": "object",
       "properties": {
         "url": {
@@ -3641,11 +3639,11 @@ export const specSchemas = {
       "type": "object",
       "description": "Settings for the data extension protocol, to fetch property values",
       "properties": {
-        "propose_properties": {
+        "proposeProperties": {
           "type": "boolean",
           "description": "Whether the service supports property proposals"
         },
-        "property_settings": {
+        "propertySettings": {
           "type": "array",
           "description": "Definition of the settings configurable by the user when fetching a property",
           "items": {
@@ -3663,19 +3661,19 @@ export const specSchemas = {
                   "default": {
                     "type": "number"
                   },
-                  "label": {
+                  "id": {
                     "type": "string"
                   },
                   "name": {
                     "type": "string"
                   },
-                  "help_text": {
+                  "helpText": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "type",
-                  "label",
+                  "id",
                   "name"
                 ]
               },
@@ -3692,19 +3690,19 @@ export const specSchemas = {
                   "default": {
                     "type": "string"
                   },
-                  "label": {
+                  "id": {
                     "type": "string"
                   },
                   "name": {
                     "type": "string"
                   },
-                  "help_text": {
+                  "helpText": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "type",
-                  "label",
+                  "id",
                   "name"
                 ]
               },
@@ -3721,19 +3719,19 @@ export const specSchemas = {
                   "default": {
                     "type": "boolean"
                   },
-                  "label": {
+                  "id": {
                     "type": "string"
                   },
                   "name": {
                     "type": "string"
                   },
-                  "help_text": {
+                  "helpText": {
                     "type": "string"
                   }
                 },
                 "required": [
                   "type",
-                  "label",
+                  "id",
                   "name"
                 ]
               },
@@ -3750,13 +3748,13 @@ export const specSchemas = {
                   "default": {
                     "type": "string"
                   },
-                  "label": {
+                  "id": {
                     "type": "string"
                   },
                   "name": {
                     "type": "string"
                   },
-                  "help_text": {
+                  "helpText": {
                     "type": "string"
                   },
                   "choices": {
@@ -3780,7 +3778,7 @@ export const specSchemas = {
                 },
                 "required": [
                   "type",
-                  "label",
+                  "id",
                   "name",
                   "choices"
                 ]
@@ -3789,13 +3787,16 @@ export const specSchemas = {
           }
         }
       }
+    },
+    "standardizedScore": {
+      "type": "boolean",
+      "description": "Whether the service returns values between 0 and 100 (inclusive) in the score field of reconciliation candidates"
     }
   },
   "required": [
     "versions",
     "name",
-    "identifierSpace",
-    "schemaSpace"
+    "view"
   ]
 }
 ,
@@ -5424,10 +5425,6 @@ export const specSchemas = {
       "items": {
         "type": "object",
         "properties": {
-          "query": {
-            "type": "string",
-            "description": "A string to be matched against the name of the entities"
-          },
           "type": {
             "description": "A type identifier indicating which class of entities to restrict the search to",
             "type": "string"
@@ -5440,18 +5437,27 @@ export const specSchemas = {
             "type": "string",
             "description": "The text-processing language for the query"
           },
-          "properties": {
+          "conditions": {
             "type": "array",
-            "description": "An optional list of property mappings to refine the query",
+            "minItems": 1,
+            "description": "A list of conditions to select candidates",
             "items": {
               "type": "object",
               "properties": {
+                "matchType": {
+                  "type": "string",
+                  "description": "A string to indicate whether to match the supplied value to entity names or property values",
+                  "enum": [
+                    "name",
+                    "property"
+                  ]
+                },
                 "pid": {
                   "type": "string",
-                  "description": "The identifier of the property, whose values will be compared to the values supplied"
+                  "description": "The identifier of the property, whose values will be compared to the values supplied. Required if 'matchType' is 'property'."
                 },
                 "v": {
-                  "description": "A value (or array of values) to match against the property values associated with the property on each candidate",
+                  "description": "A value (or array of values) to match against the entity names or property values associated with the property on each candidate",
                   "oneOf": [
                     {
                       "$ref": "#/definitions/property_value"
@@ -5463,41 +5469,34 @@ export const specSchemas = {
                       }
                     }
                   ]
+                },
+                "required": {
+                  "type": "boolean",
+                  "description": "A boolean indicating if a match of this condition is required for an entity to enter the list of candidates"
+                },
+                "matchQuantifier": {
+                  "type": "string",
+                  "description": "A string to indicate which of the values in v to match",
+                  "enum": [
+                    "any",
+                    "all",
+                    "none"
+                  ]
+                },
+                "matchQualifier": {
+                  "type": "string",
+                  "description": "A string to indicate how to match the values in v"
                 }
               },
               "required": [
-                "pid",
+                "matchType",
                 "v"
               ]
             }
-          },
-          "type_strict": {
-            "type": "string",
-            "description": "A classification of the type matching strategy when multiple types are supplied",
-            "enum": [
-              "any",
-              "should",
-              "all"
-            ]
           }
         },
-        "anyOf": [
-          {
-            "required": [
-              "query"
-            ]
-          },
-          {
-            "required": [
-              "properties"
-            ],
-            "properties": {
-              "properties": {
-                "type": "array",
-                "minItems": 1
-              }
-            }
-          }
+        "required": [
+          "conditions"
         ],
         "additionalProperties": false
       }
@@ -5609,8 +5608,7 @@ export const specSchemas = {
               },
               "required": [
                 "id",
-                "name",
-                "score"
+                "name"
               ]
             }
           }
@@ -5710,6 +5708,27 @@ export const specSchemas = {
           "description": {
             "type": "string",
             "description": "An optional description which can be provided to disambiguate namesakes, providing more context."
+          },
+          "matchQualifiers": {
+            "type": "array",
+            "description": "An optional array of objects representing the matchQualifiers supported for the suggested property",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Identifier of the matchQualifier"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the matchQualifier"
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
           }
         },
         "required": [
