@@ -14,8 +14,6 @@ object-assign
  * Programatically add the following
  */
 
-/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
-
 /** @license React v0.13.6
  * scheduler.production.min.js
  *
