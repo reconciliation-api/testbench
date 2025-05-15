@@ -61,6 +61,7 @@ export const postParams = ({
          method: "POST",
          headers: {
            "Content-Type": "application/json",
+           "Accept-Language": "en",
          },
          body:queries,
        });
