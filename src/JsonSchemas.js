@@ -3301,6 +3301,12 @@ export const specSchemas = {
           "description": {
             "type": "string",
             "description": "An optional description which can be provided to disambiguate namesakes, providing more context."
+          },
+          "lang": {
+            "$ref": "lang.json"
+          },
+          "dir": {
+            "$ref": "dir.json"
           }
         },
         "required": [
@@ -3380,6 +3386,12 @@ export const specSchemas = {
           "name": {
             "type": "string"
           },
+          "lang": {
+            "$ref": "lang.json"
+          },
+          "dir": {
+            "$ref": "dir.json"
+          },
           "type": {
             "type": "object",
             "properties": {
@@ -3388,6 +3400,12 @@ export const specSchemas = {
               },
               "name": {
                 "type": "string"
+              },
+              "lang": {
+                "$ref": "lang.json"
+              },
+              "dir": {
+                "$ref": "dir.json"
               }
             },
             "required": [
@@ -3446,10 +3464,10 @@ export const specSchemas = {
                             "type": "string"
                           },
                           "lang": {
-                            "type": "string"
+                            "$ref": "lang.json"
                           },
                           "dir": {
-                            "type": "string"
+                            "$ref": "dir.json"
                           }
                         },
                         "required": [
@@ -3465,10 +3483,10 @@ export const specSchemas = {
                             "type": "string"
                           },
                           "lang": {
-                            "type": "string"
+                            "$ref": "lang.json"
                           },
                           "dir": {
-                            "type": "string"
+                            "$ref": "dir.json"
                           }
                         },
                         "required": [
@@ -3530,6 +3548,25 @@ export const specSchemas = {
   ]
 }
 ,
+"dir":
+{
+    "$id": "https://reconciliation-api.github.io/specs/draft/schemas/dir.json",
+    "type": "string",
+    "enum": [
+        "ltr",
+        "rtl",
+        "auto"
+    ],
+    "description": "The text direction for the natural language fields of this object"
+}
+,
+"lang":
+{
+    "$id": "https://reconciliation-api.github.io/specs/draft/schemas/lang.json",
+    "type": "string",
+    "description": "The text-processing language for the natural language fields of this object"
+}
+,
 "manifest":
 {
   "$schema": "http://json-schema.org/schema#",
@@ -3550,6 +3587,12 @@ export const specSchemas = {
     "name": {
       "type": "string",
       "description": "A human-readable name for the service or data source"
+    },
+    "lang": {
+      "$ref": "lang.json"
+    },
+    "dir": {
+      "$ref": "dir.json"
     },
     "documentation": {
       "type": "string",
@@ -3669,6 +3712,12 @@ export const specSchemas = {
                   },
                   "helpText": {
                     "type": "string"
+                  },
+                  "lang": {
+                    "$ref": "lang.json"
+                  },
+                  "dir": {
+                    "$ref": "dir.json"
                   }
                 },
                 "required": [
@@ -3698,6 +3747,12 @@ export const specSchemas = {
                   },
                   "helpText": {
                     "type": "string"
+                  },
+                  "lang": {
+                    "$ref": "lang.json"
+                  },
+                  "dir": {
+                    "$ref": "dir.json"
                   }
                 },
                 "required": [
@@ -3727,6 +3782,12 @@ export const specSchemas = {
                   },
                   "helpText": {
                     "type": "string"
+                  },
+                  "lang": {
+                    "$ref": "lang.json"
+                  },
+                  "dir": {
+                    "$ref": "dir.json"
                   }
                 },
                 "required": [
@@ -3757,6 +3818,12 @@ export const specSchemas = {
                   "helpText": {
                     "type": "string"
                   },
+                  "lang": {
+                    "$ref": "lang.json"
+                  },
+                  "dir": {
+                    "$ref": "dir.json"
+                  },
                   "choices": {
                     "type": "array",
                     "items": {
@@ -3767,6 +3834,12 @@ export const specSchemas = {
                         },
                         "name": {
                           "type": "string"
+                        },
+                        "lang": {
+                          "$ref": "lang.json"
+                        },
+                        "dir": {
+                          "$ref": "dir.json"
                         }
                       },
                       "required": [
@@ -5406,6 +5479,12 @@ export const specSchemas = {
             },
             "name": {
               "type": "string"
+            },
+            "lang": {
+              "$ref": "lang.json"
+            },
+            "dir": {
+              "$ref": "dir.json"
             }
           },
           "required": [
@@ -5434,8 +5513,10 @@ export const specSchemas = {
             "description": "The maximum number of candidates to return"
           },
           "lang": {
-            "type": "string",
-            "description": "The text-processing language for the query"
+            "$ref": "lang.json"
+          },
+          "dir": {
+            "$ref": "dir.json"
           },
           "conditions": {
             "type": "array",
@@ -5537,6 +5618,16 @@ export const specSchemas = {
                   "type": "string",
                   "description": "Optional description of the candidate entity"
                 },
+                "lang": {
+                  "$ref": "lang.json"
+                },
+                "dir": {
+                  "$ref": "dir.json"
+                },
+                "image": {
+                  "type": "string",
+                  "description": "Optional URL of an image illustrating the entity"
+                },
                 "score": {
                   "type": "number",
                   "description": "Number indicating how likely it is that the candidate matches the query"
@@ -5554,6 +5645,12 @@ export const specSchemas = {
                       "name": {
                         "type": "string",
                         "description": "A human-readable name for the feature"
+                      },
+                      "lang": {
+                        "$ref": "lang.json"
+                      },
+                      "dir": {
+                        "$ref": "dir.json"
                       },
                       "value": {
                         "description": "The value of the feature for this reconciliation candidate",
@@ -5592,6 +5689,12 @@ export const specSchemas = {
                           },
                           "name": {
                             "type": "string"
+                          },
+                          "lang": {
+                            "$ref": "lang.json"
+                          },
+                          "dir": {
+                            "$ref": "dir.json"
                           }
                         },
                         "required": [
@@ -5645,6 +5748,16 @@ export const specSchemas = {
             "type": "string",
             "description": "An optional description which can be provided to disambiguate namesakes, providing more context."
           },
+          "lang": {
+            "$ref": "lang.json"
+          },
+          "dir": {
+            "$ref": "dir.json"
+          },
+          "image": {
+            "type": "string",
+            "description": "An optional URL of an image which illustrates the entity, letting users identify it visually."
+          },
           "notable": {
             "type": "array",
             "description": "Types the suggest entity belongs to",
@@ -5659,6 +5772,12 @@ export const specSchemas = {
                     },
                     "name": {
                       "type": "string"
+                    },
+                    "lang": {
+                      "$ref": "lang.json"
+                    },
+                    "dir": {
+                      "$ref": "dir.json"
                     }
                   },
                   "required": [
@@ -5709,6 +5828,12 @@ export const specSchemas = {
             "type": "string",
             "description": "An optional description which can be provided to disambiguate namesakes, providing more context."
           },
+          "lang": {
+            "$ref": "lang.json"
+          },
+          "dir": {
+            "$ref": "dir.json"
+          },
           "matchQualifiers": {
             "type": "array",
             "description": "An optional array of objects representing the matchQualifiers supported for the suggested property",
@@ -5722,6 +5847,12 @@ export const specSchemas = {
                 "name": {
                   "type": "string",
                   "description": "Name of the matchQualifier"
+                },
+                "lang": {
+                  "$ref": "lang.json"
+                },
+                "dir": {
+                  "$ref": "dir.json"
                 }
               },
               "required": [
@@ -5776,6 +5907,12 @@ export const specSchemas = {
         "description": {
             "type": "string",
             "description": "An optional description which can be provided to disambiguate namesakes, providing more context."
+        },
+        "lang": {
+          "$ref": "lang.json"
+        },
+        "dir": {
+          "$ref": "dir.json"
         },
         "broader": {
             "type": "array",
