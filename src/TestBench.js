@@ -305,7 +305,7 @@ export default class TestBench extends React.Component {
        <div>
         {this.renderManifestValidationErrors()}
         <Tabs defaultActiveKey="reconcile" animation={false} id="test-bench-tabs">
-            <Tab eventKey="reconcile" title="Reconcile">
+            <Tab eventKey="reconcile" title="Match">
                 <div className="tabContent">
                 <Col sm={5}>
                     <Form horizontal>
