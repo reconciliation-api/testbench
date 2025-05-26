@@ -31,6 +31,7 @@ export default class TestBench extends React.Component {
         reconCustomType: undefined,
         reconProperties: [],
         reconLimit: undefined,
+        reconUserLanguage: 'en',
         reconResponseValidationErrors: [],
         previewEntityId : undefined
     };
@@ -69,6 +70,12 @@ export default class TestBench extends React.Component {
   onReconLimitChange = (e) => {
     this.setState({
         reconLimit: e.currentTarget.value
+    });
+  }
+
+  onReconUserLanguageChange = (e) => {
+    this.setState({
+        reconUserLanguage: e.currentTarget.value
     });
   }
 
@@ -119,7 +126,7 @@ export default class TestBench extends React.Component {
      }
      this.setState({reconResults: 'fetching'});
      let fetcher = this.props.service.postFetcher();
-     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.props.service.manifest.versions)),manifestVersion:this.props.service.manifest.versions})
+     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.props.service.manifest.versions)),manifestVersion:this.props.service.manifest.versions, userLanguage:this.state.reconUserLanguage})
         .then(result => result.json())
         .then(result =>
            this.setState({
@@ -335,6 +342,16 @@ export default class TestBench extends React.Component {
                                     placeholder="Maximum number of candidates"
                                     value={this.state.reconLimit}
                                     onChange={(v) => this.onReconLimitChange(v)} />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup controlId="reconUserLanguage" hidden={!this.props.service.manifest.versions?.includes(specVersions["1.0-draft"])} style={{ display: "flex",alignItems: "flex-end" }}>
+                            <Col sm={2} componentClass={ControlLabel}>User interface language:</Col>
+                            <Col sm={10}>
+                            <FormControl
+                                    type="text"
+                                    placeholder="Enter the language of the intended audience"
+                                    value={this.state.reconUserLanguage}
+                                    onChange={(v) => this.onReconUserLanguageChange(v)} />
                             </Col>
                         </FormGroup>
                     </Form>
