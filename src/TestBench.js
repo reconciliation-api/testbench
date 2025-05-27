@@ -237,7 +237,7 @@ export default class TestBench extends React.Component {
         return {
             queries: [{
                 ...(isCustomType ? { type: this.state.reconCustomType.id } : isNotNoType ? { type: this.state.reconType } : {}),
-                ...(isLimitValid && { limit: this.state.reconLimit }),
+                ...(isLimitValid && { limit: Number(this.state.reconLimit) }),
                 conditions: buildConditions()
               }]
         };
