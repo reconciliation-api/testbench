@@ -41,6 +41,7 @@ export const postParams = ({
    url,
    queries,
    manifestVersion = [specVersions["0.2"]],
+   userLanguage = "en"
  }) => {
    let currentManifestVersion = specVersions["0.2"];
    if(manifestVersion?.includes(specVersions["1.0-draft"])) currentManifestVersion = specVersions["1.0-draft"];
@@ -61,7 +62,7 @@ export const postParams = ({
          method: "POST",
          headers: {
            "Content-Type": "application/json",
-           "Accept-Language": "en",
+           "Accept-Language": userLanguage,
          },
          body:queries,
        });

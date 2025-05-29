@@ -96,15 +96,3 @@ div .radio label {
    display: flex;
    gap:8px
 }
-
-.candidate-main-title-lang-bold,.candidate-main-title-str-bold{
-   font-weight: bold;
-}
-
-.candidate-main-title-lang-bold,.candidate-main-title-lang{
-   color:#ababab
-}  
-
-.candidate-description-wrapper{
-   margin-left: 1.5em;
-}
