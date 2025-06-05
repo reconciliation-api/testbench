@@ -5,8 +5,19 @@ import { SPEC_VERSIONS } from "./utils";
 
 export default class Candidate extends React.Component {
   get url() {
-    const { manifest, candidate } = this.props;
-    return manifest?.view?.url?.replace("{{id}}", candidate?.id ?? "");
+    let view = null;
+    let manifest = this.props.manifest;
+    if (
+      "view" in manifest &&
+      "url" in this.props.manifest.view &&
+      "id" in this.props.candidate
+    ) {
+      view = this.props.manifest.view.url.replace(
+        "{{id}}",
+        this.props.candidate.id
+      );
+    }
+    return view;
   }
 
   renderDescription() {
