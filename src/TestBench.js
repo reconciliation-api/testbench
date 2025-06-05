@@ -19,7 +19,7 @@ import PreviewRenderer from './PreviewRenderer.js';
 import DataExtensionTab from './DataExtensionTab.js';
 import JSONTree from 'react-json-tree';
 import { getSchema } from './JsonValidator.js';
-import { jsonTheme, specVersions } from './utils.js';
+import { jsonTheme, SPEC_VERSIONS } from './utils.js';
 
 export default class TestBench extends React.Component {
   constructor(props) {
@@ -164,7 +164,7 @@ export default class TestBench extends React.Component {
         return (
           <ListGroup>
             {this.state.reconResults.map(result =>
-              <Candidate candidate={result} manifest={this.props.service.manifest} />
+              <Candidate candidate={result} manifest={this.props.service.manifest} version={this.props.service.latestCompatibleVersion}/>
             )}
           </ListGroup>
         );
@@ -233,7 +233,7 @@ export default class TestBench extends React.Component {
         return query;
     };
 
-    if (manifestVersion?.includes(specVersions["1.0-draft"])) {
+    if (manifestVersion?.includes(SPEC_VERSIONS.DRAFT_1_0)) {
         return {
             queries: [{
                 ...(isCustomType ? { type: this.state.reconCustomType.id } : isNotNoType ? { type: this.state.reconType } : {}),
@@ -344,7 +344,8 @@ export default class TestBench extends React.Component {
                                     onChange={(v) => this.onReconLimitChange(v)} />
                             </Col>
                         </FormGroup>
-                        <FormGroup controlId="reconUserLanguage" hidden={!this.props.service.manifest.versions?.includes(specVersions["1.0-draft"])} style={{ display: "flex",alignItems: "flex-end" }}>
+                        {this.props.service.manifest.versions?.includes(SPEC_VERSIONS.DRAFT_1_0) &&
+                        <FormGroup controlId="reconUserLanguage" style={{ display: "flex",alignItems: "flex-end" }}>
                             <Col sm={2} componentClass={ControlLabel}>User interface language:</Col>
                             <Col sm={10}>
                             <FormControl
@@ -353,7 +354,8 @@ export default class TestBench extends React.Component {
                                     value={this.state.reconUserLanguage}
                                     onChange={(v) => this.onReconUserLanguageChange(v)} />
                             </Col>
-                        </FormGroup>
+                        </FormGroup>}
+                        
                     </Form>
                 </Col>
                 <Col sm={3}>
