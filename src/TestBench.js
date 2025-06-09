@@ -164,7 +164,7 @@ export default class TestBench extends React.Component {
         return (
           <ListGroup>
             {this.state.reconResults.map(result =>
-              <Candidate candidate={result} manifest={this.props.service.manifest} version={this.props.service.latestCompatibleVersion}/>
+              <Candidate candidate={result} manifest={this.props.service.manifest} />
             )}
           </ListGroup>
         );

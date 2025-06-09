@@ -21,21 +21,10 @@ export default class Candidate extends React.Component {
   }
 
   renderDescription() {
-    const { candidate, version } = this.props;
+    const { candidate } = this.props;
     const description = candidate?.description;
 
     if (!description) return null;
-
-    if (version === SPEC_VERSIONS.DRAFT_1_0) {
-      return (
-        <div>
-          <div className="candidateField">Description</div>
-          <div className="candidate-description-wrapper">
-            <span className="candidate-main-title-str">{description}</span>
-          </div>
-        </div>
-      );
-    }
 
     return (
       <div>
