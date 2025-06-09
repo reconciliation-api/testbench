@@ -1,7 +1,6 @@
 import React from "react";
 import Badge from "react-bootstrap/lib/Badge";
 import ListGroupItem from "react-bootstrap/lib/ListGroupItem";
-import { SPEC_VERSIONS } from "./utils";
 
 export default class Candidate extends React.Component {
   get url() {
@@ -68,22 +67,12 @@ export default class Candidate extends React.Component {
   }
 
   render() {
-    const { candidate, version } = this.props;
-    const header =
-      version === SPEC_VERSIONS.DRAFT_1_0 ? (
-        <span className="candidate-main-title">
-          <span className="candidate-main-title-str-bold">
-            {candidate?.name}
-          </span>
-        </span>
-      ) : (
-        candidate?.name
-      );
+    const { candidate } = this.props;
 
     return (
       <ListGroupItem
         key={candidate.id}
-        header={header}
+        header={candidate.name}
         active={candidate.match}
       >
         <Badge style={{ float: "right" }}>{candidate.score}</Badge>
