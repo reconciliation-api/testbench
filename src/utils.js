@@ -1,13 +1,11 @@
 
 import fetchJsonp from 'fetch-jsonp';
 
-export const specVersions={
-"0.1":"0.1",
-"0.2":"0.2",
-"0.3":"0.3",
-"draft":"draft",
-"1.0-draft":"1.0-draft",
-}
+export const SPEC_VERSIONS = {
+  V0_1: "0.1",
+  V0_2: "0.2",
+  DRAFT_1_0: "1.0-draft",
+};
 const addParams = (baseUrl, params) => {
    let url = new URL(baseUrl);
    if (params) {
@@ -40,14 +38,14 @@ export const postJsonpParams = ({url,queries}) => {
 export const postParams = ({
    url,
    queries,
-   manifestVersion = [specVersions["0.2"]],
+   manifestVersion = [SPEC_VERSIONS.V0_2],
    userLanguage = "en"
  }) => {
-   let currentManifestVersion = specVersions["0.2"];
-   if(manifestVersion?.includes(specVersions["1.0-draft"])) currentManifestVersion = specVersions["1.0-draft"];
+   let currentManifestVersion = SPEC_VERSIONS.V0_2;
+   if(manifestVersion?.includes(SPEC_VERSIONS.DRAFT_1_0)) currentManifestVersion = SPEC_VERSIONS.DRAFT_1_0;
    switch (currentManifestVersion) {
      
-     case "0.2":
+     case SPEC_VERSIONS.V0_2:
        return fetch(url, {
          method: "POST",
          headers: {
@@ -57,7 +55,7 @@ export const postParams = ({
            queries,
          }),
        });
-     case "1.0-draft":
+     case SPEC_VERSIONS.DRAFT_1_0:
        return fetch(url, {
          method: "POST",
          headers: {
