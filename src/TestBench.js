@@ -126,7 +126,9 @@ export default class TestBench extends React.Component {
      }
      this.setState({reconResults: 'fetching'});
      let fetcher = this.props.service.postFetcher();
-     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.props.service.manifest.versions)),manifestVersion:this.props.service.manifest.versions, userLanguage:this.state.reconUserLanguage})
+     let url = this.props.service.endpoint;
+     if (this.props.service.manifest.versions?.includes(SPEC_VERSIONS.DRAFT_1_0)) url = `${url.replace(/\/$/, '')}/match`;
+     fetcher({url,queries:JSON.stringify(this.formulateReconQuery(this.props.service.manifest.versions)),manifestVersion:this.props.service.manifest.versions, userLanguage:this.state.reconUserLanguage})
         .then(result => result.json())
         .then(result =>
            this.setState({
@@ -251,6 +253,8 @@ export default class TestBench extends React.Component {
      if (!baseUrl) {
         return '#';
      }
+     
+    if (this.props.service.manifest.versions?.includes(SPEC_VERSIONS.DRAFT_1_0)) baseUrl = `${baseUrl.replace(/\/$/, '')}/match`;
 
      let params = {
         queries: JSON.stringify( this.formulateReconQuery(this.props.service.manifest.versions))
