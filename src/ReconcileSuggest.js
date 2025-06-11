@@ -1,5 +1,12 @@
 import React from 'react';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
+import { SPEC_VERSIONS } from './utils';
+
+const suggestPathMap = {
+  entity: '/suggest/entity',
+  property: '/suggest/property',
+  type: '/suggest/type',
+};
 
 export default class ReconcileSuggest extends React.Component {
    constructor() {
@@ -34,6 +41,10 @@ export default class ReconcileSuggest extends React.Component {
      let configuration = this.manifest.suggest[this.props.entityClass];
      if (!configuration) {
         return null;
+     }
+     if(configuration && this.props.service.manifest.versions?.includes(SPEC_VERSIONS.DRAFT_1_0)){
+        const path = suggestPathMap[this.props.entityClass];
+        return `${this.props.service.endpoint.replace(/\/$/, '')}${path}`;
      }
      return configuration.service_url + configuration.service_path;
    }
