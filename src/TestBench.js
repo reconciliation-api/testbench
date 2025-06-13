@@ -212,14 +212,45 @@ export default class TestBench extends React.Component {
     const isLimitValid = !isNaN(reconLimit);
 
     const buildConditions = () => {
-        let conditions = [{ matchType: "name", v: this.state.reconQuery }];
-        if (hasReconProperties) {
-            const properties = this.state.reconProperties
-                .filter(m => m && m.property && m.value)
-                .map(m => ({ matchType: "property", pid: m.property.id, v: m.value }));
-            conditions = conditions.concat(properties);
-        }
-        return conditions;
+      let conditions =
+        this.state.reconQuery && this.state.reconQuery.trim() !== ""
+          ? [{ matchType: "name", v: this.state.reconQuery }]
+          : [];
+
+      if (hasReconProperties) {
+        const properties = this.state.reconProperties
+          .filter((m) => m && m.property && m.value)
+          .map((m) => {
+            const allValues = [m.value];
+
+            if (m.additionalValues && m.additionalValues?.length > 0) {
+              const validAdditionalValues = m.additionalValues.filter(
+                (additionalValue) =>
+                  additionalValue && additionalValue.trim() !== ""
+              );
+              allValues.push(...validAdditionalValues);
+            }
+
+            const propertyCondition = {
+              matchType: "property",
+              pid: m.property?.id || m.property,
+              v: allValues?.length === 1 ? allValues[0] : allValues,
+              required: m.required || false,
+              matchQuantifier: m.operator || "any",
+              matchQualifier:undefined
+            };
+
+            if (m?.qualifier) {
+              propertyCondition.matchQualifier = m.qualifier?.id ?? m.qualifier;
+            }
+
+            return propertyCondition;
+          });
+
+        conditions = conditions.concat(properties);
+      }
+
+      return conditions;
     };
 
     const buildQuery = () => {
