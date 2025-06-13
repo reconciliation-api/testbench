@@ -84,7 +84,7 @@ export default class PropertyMappingV2 extends React.Component {
             }
             style={{ minWidth: "60px" }}
           >
-            {["all", "none"].map((op) => (
+            {["any", "all", "none"].map((op) => (
               <option key={op} value={op}>
                 {op}
               </option>
