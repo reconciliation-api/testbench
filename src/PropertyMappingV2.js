@@ -20,7 +20,7 @@ export default class PropertyMappingV2 extends React.Component {
       ...this.props.value,
       {
         property: "",
-        operator: "any",
+        operator: "all",
         value: "",
         required: false,
       },
@@ -78,13 +78,13 @@ export default class PropertyMappingV2 extends React.Component {
 
           <FormControl
             componentClass="select"
-            value={mapping.operator || "any"}
+            value={mapping.operator || "all"}
             onChange={(e) =>
               this.onFieldChange(idx, "operator", e.target.value)
             }
             style={{ minWidth: "60px" }}
           >
-            {["any", "all", "none"].map((op) => (
+            {["all", "none"].map((op) => (
               <option key={op} value={op}>
                 {op}
               </option>
