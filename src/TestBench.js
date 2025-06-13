@@ -4,7 +4,6 @@ import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import Form from 'react-bootstrap/lib/Form';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
-import InputGroup from 'react-bootstrap/lib/InputGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Radio from 'react-bootstrap/lib/Radio';
 import Button from 'react-bootstrap/lib/Button';
@@ -20,6 +19,8 @@ import DataExtensionTab from './DataExtensionTab.js';
 import JSONTree from 'react-json-tree';
 import { getSchema } from './JsonValidator.js';
 import { jsonTheme, SPEC_VERSIONS } from './utils.js';
+import PropertyMappingV2 from './PropertyMappingV2.js';
+import { Row } from 'react-bootstrap';
 
 export default class TestBench extends React.Component {
   constructor(props) {
@@ -344,31 +345,55 @@ export default class TestBench extends React.Component {
                 <div className="tabContent">
                 <Col sm={5}>
                     <Form horizontal>
-                        <FormGroup controlId="reconcileName">
-                            <Col componentClass={ControlLabel} sm={2}>Name:</Col>
-                            <Col sm={10}>
-                                <InputGroup>
+                        <FormGroup controlId={this.props.service.manifest.versions?.includes(
+                        SPEC_VERSIONS.DRAFT_1_0
+                      )?"conditions":"reconcileName"}>
+                            <Col componentClass={ControlLabel} sm={2}>{this.props.service.manifest.versions?.includes(
+                        SPEC_VERSIONS.DRAFT_1_0
+                      )?"Conditions:":"Name:"}</Col>
+                           <Col sm={10}>
+                           <Row>
+                            <Col>
                                 <FormControl
                                     type="text"
-                                    placeholder="Entity to reconcile"
+                                    placeholder={this.props.service.manifest.versions?.includes(
+                        SPEC_VERSIONS.DRAFT_1_0
+                      )?"Name":"Entity to reconcile"}
                                     value={this.state.reconQuery}
                                     onChange={this.onReconQueryChange} />
-                                    <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></InputGroup.Button>
-                                </InputGroup>
+
+                                    
+                            {this.props.service.manifest.versions?.includes(
+                        SPEC_VERSIONS.DRAFT_1_0
+                      ) && (
+                        <PropertyMappingV2
+                          service={this.props.service}
+                          value={this.state.reconProperties}
+                          onChange={this.onReconPropertiesChange}
+                        />
+                      )}
+                            </Col>
+                            </Row>
                             </Col>
                         </FormGroup>
+                            
                         <FormGroup controlId="reconcileType">
                             <Col componentClass={ControlLabel} sm={2}>Type:</Col>
                             <Col sm={10}>
                                 {this.renderTypeChoices()}
                             </Col>
                         </FormGroup>
-                        <FormGroup controlId="reconcileProperties">
+                       {
+                        !this.props.service.manifest.versions?.includes(
+                        SPEC_VERSIONS.DRAFT_1_0
+                      ) && <FormGroup controlId="reconcileProperties">
                             <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
                             <Col sm={10}>
                                 <PropertyMapping service={this.props.service} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
                             </Col>
                         </FormGroup>
+                       }
+                         
                         <FormGroup controlId="reconcileLimit">
                             <Col componentClass={ControlLabel} sm={2}>Limit:</Col>
                             <Col sm={10}>
@@ -390,6 +415,8 @@ export default class TestBench extends React.Component {
                                     onChange={(v) => this.onReconUserLanguageChange(v)} />
                             </Col>
                         </FormGroup>}
+
+                     <Col sm={3} smOffset={5}> <Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></Col>
                         
                     </Form>
                 </Col>
