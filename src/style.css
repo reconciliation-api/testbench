@@ -92,7 +92,154 @@ div .radio label {
    margin-left: 1.5em;
 }
 
-.candidate-main-title{
-   display: flex;
-   gap:8px
+.property-mapping-container {
+  max-width: 1000px;
+  margin: 16px auto 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: system-ui, sans-serif;
 }
+
+.property-mapping-container .mapping-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.property-mapping-container .mapping-row {
+  display: grid;
+  grid-template-columns: 2fr 100px 2fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.property-mapping-container .form-control {
+  height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.property-mapping-container .form-control:focus {
+  outline: none;
+  border-color: #888;
+}
+
+.property-mapping-container .select.form-control {
+  cursor: pointer;
+}
+
+.property-mapping-container .delete-button {
+  background: none;
+  border: none;
+  color: #888;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
+
+.property-mapping-container .delete-button:hover {
+  color: #c00;
+}
+
+.property-mapping-container .mapping-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  font-size: 14px;
+}
+
+.property-mapping-container .checkbox input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.property-mapping-container .action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.property-mapping-container .btn-link {
+  background: none;
+  border: none;
+  color: #007acc;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.property-mapping-container .btn-link:hover {
+  color: #005f99;
+}
+
+.property-mapping-container .additional-row,
+.property-mapping-container .qualifier-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.property-mapping-container .qualifier-section {
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.property-mapping-container .control-label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.property-mapping-container .add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  color: #000;
+  border: 1px solid #000;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.property-mapping-container .add-button:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #000;
+  border-color: #000;
+}
+
+.property-mapping-container .add-button:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .property-mapping-container .mapping-row {
+    grid-template-columns: 1fr;
+  }
+
+  .property-mapping-container .mapping-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .property-mapping-container .action-buttons {
+    align-self: flex-end;
+  }
+}
+
