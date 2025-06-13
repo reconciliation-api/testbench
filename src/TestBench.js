@@ -282,12 +282,10 @@ export default class TestBench extends React.Component {
             v: allValues?.length === 1 ? allValues[0] : allValues,
             required: m.required || false,
             matchQuantifier: m.operator || "any",
-            matchQualifier: undefined
+            ...(m?.qualifier && {
+              matchQualifier: m.qualifier?.id ?? m.qualifier,
+            }),
           };
-
-          if (m?.qualifier) {
-            propertyCondition.matchQualifier = m.qualifier?.id ?? m.qualifier;
-          }
 
           return propertyCondition;
         });
