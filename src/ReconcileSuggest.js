@@ -84,6 +84,7 @@ export default class ReconcileSuggest extends React.Component {
    render() {
       return (
         <AsyncTypeahead id={this.props.id}
+           placeholder={this.props.placeholder}
            disabled={this.getUrl() === null}
            isLoading={this.state.isLoading}
            onSearch={this.onSuggestionsFetchRequested}
