@@ -169,7 +169,7 @@ export default class PropertyMappingV2 extends React.Component {
                 <FormControl
                   id={`qualifier-value-${idx}`}
                   componentClass="select"
-                  value={mapping.qualifier || "any"}
+                  value={mapping.qualifier}
                   onChange={(e) =>
                     this.onFieldChange(idx, "qualifier", e.target.value)
                   }
