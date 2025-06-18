@@ -1,27 +1,63 @@
-name: Continuous integration
+name: CI/CD for Multiple Versions to GitHub Pages
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master   
+      - 1.0-draft  # Deploy 1.0-draft to a subdirectory (e.g., /1.0-draft)
   pull_request:
-    branches: [ master ]
+    branches: [ master ] 
 
 jobs:
-  build:
-
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4 # Recommended to use the latest version
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm' # Add caching for faster `npm ci`
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build --if-present
+        env:
+          CI: true
+
+      - name: Run Tests
+        run: npm test # Keep your tests running before deployment
+
+      - name: Determine Publish Directory for GitHub Pages
+        id: publish_dir_step
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          PUBLISH_SUBDIR=""
+          if [ "$BRANCH_NAME" == "master" ]; then
+            PUBLISH_SUBDIR="." # Master branch deploys to the root of gh-pages
+          else
+            # For 1.0-draft, publish to a subdirectory named after the branch
+            PUBLISH_SUBDIR="$BRANCH_NAME"
+          fi
+          echo "publish_subdir=$PUBLISH_SUBDIR" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/1.0-draft')
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          publish_branch: gh-pages
+          destination_dir: ${{ steps.publish_dir_step.outputs.publish_subdir }}
+          keep_files: true 
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
