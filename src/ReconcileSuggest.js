@@ -1,6 +1,5 @@
 import React from 'react';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
-import { SPEC_VERSIONS } from './utils';
 
 const suggestPathMap = {
   entity: '/suggest/entity',
@@ -42,11 +41,8 @@ export default class ReconcileSuggest extends React.Component {
      if (!configuration) {
         return null;
      }
-     if(configuration && this.props.service.manifest.versions?.includes(SPEC_VERSIONS.DRAFT_1_0)){
         const path = suggestPathMap[this.props.entityClass];
         return `${this.props.service.endpoint.replace(/\/$/, '')}${path}`;
-     }
-     return configuration.service_url + configuration.service_path;
    }
 
    onSuggestionsFetchRequested = (value) => {

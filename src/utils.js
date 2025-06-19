@@ -1,11 +1,6 @@
 
 import fetchJsonp from 'fetch-jsonp';
 
-export const SPEC_VERSIONS = {
-  V0_1: "0.1",
-  V0_2: "0.2",
-  DRAFT_1_0: "1.0-draft",
-};
 const addParams = (baseUrl, params) => {
    let url = new URL(baseUrl);
    if (params) {
@@ -38,25 +33,9 @@ export const postJsonpParams = ({url,queries}) => {
 export const postParams = ({
    url,
    queries,
-   manifestVersion = [SPEC_VERSIONS.V0_2],
    userLanguage = "en"
  }) => {
-   let currentManifestVersion = SPEC_VERSIONS.V0_2;
-   if(manifestVersion?.includes(SPEC_VERSIONS.DRAFT_1_0)) currentManifestVersion = SPEC_VERSIONS.DRAFT_1_0;
-   switch (currentManifestVersion) {
-     
-     case SPEC_VERSIONS.V0_2:
-       return fetch(url, {
-         method: "POST",
-         headers: {
-           "Content-Type": "application/x-www-form-urlencoded",
-         },
-         body: new URLSearchParams({
-           queries,
-         }),
-       });
-     case SPEC_VERSIONS.DRAFT_1_0:
-       return fetch(url, {
+   return fetch(url, {
          method: "POST",
          headers: {
            "Content-Type": "application/json",
@@ -64,17 +43,6 @@ export const postParams = ({
          },
          body:queries,
        });
-       default:
-         return fetch(url, {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/x-www-form-urlencoded",
-           },
-           body: new URLSearchParams({
-             queries,
-           }),
-         });
-   }
  };
 
 export const jsonTheme = {
