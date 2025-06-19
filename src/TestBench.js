@@ -4,7 +4,6 @@ import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import Form from 'react-bootstrap/lib/Form';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
-import InputGroup from 'react-bootstrap/lib/InputGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Radio from 'react-bootstrap/lib/Radio';
 import Button from 'react-bootstrap/lib/Button';
@@ -12,14 +11,15 @@ import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
 import ReconcileSuggest from './ReconcileSuggest.js';
-import PropertyMapping from './PropertyMapping.js';
 import Candidate from './Candidate.js';
 import GenericInput from './GenericInput.js';
 import PreviewRenderer from './PreviewRenderer.js';
 import DataExtensionTab from './DataExtensionTab.js';
 import JSONTree from 'react-json-tree';
 import { getSchema } from './JsonValidator.js';
-import { jsonTheme, SPEC_VERSIONS } from './utils.js';
+import { jsonTheme } from './utils.js';
+import PropertyMappingV2 from './PropertyMappingV2.js';
+import { Row } from 'react-bootstrap';
 
 export default class TestBench extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ export default class TestBench extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps?.service?.endpoint !== this.props.service.endpoint) {
-        this.formulateReconQuery(this.props.service.manifest.versions)
+      this.formulateReconQuery();
     }
 }
 
@@ -126,11 +126,13 @@ export default class TestBench extends React.Component {
      }
      this.setState({reconResults: 'fetching'});
      let fetcher = this.props.service.postFetcher();
-     fetcher({url:this.props.service.endpoint,queries:JSON.stringify(this.formulateReconQuery(this.props.service.manifest.versions)),manifestVersion:this.props.service.manifest.versions, userLanguage:this.state.reconUserLanguage})
+     let url = this.props.service.endpoint;
+     url = `${url.replace(/\/$/, '')}/match`;
+     fetcher({url,queries:JSON.stringify(this.formulateReconQuery()),userLanguage:this.state.reconUserLanguage})
         .then(result => result.json())
         .then(result =>
            this.setState({
-              reconResults: result?.results?.[0]?.candidates ?? result?.q0?.result ?? [],
+              reconResults: result?.results?.[0]?.candidates?? [],
               reconResponseValidationErrors: this.validateServiceResponse('reconciliation-result-batch', result)
         }))
         .catch(e => {
@@ -202,7 +204,7 @@ export default class TestBench extends React.Component {
      }
   }
 
-  formulateReconQuery(manifestVersion) {
+  formulateReconQuery() {
     const isCustomType = this.state.reconType === "custom-type" && this.state.reconCustomType !== undefined;
     const isNotNoType = this.state.reconType !== "no-type";
     const hasReconProperties = this.state.reconProperties.length > 0;
@@ -210,30 +212,46 @@ export default class TestBench extends React.Component {
     const isLimitValid = !isNaN(reconLimit);
 
     const buildConditions = () => {
-        let conditions = [{ matchType: "name", v: this.state.reconQuery }];
-        if (hasReconProperties) {
-            const properties = this.state.reconProperties
-                .filter(m => m && m.property && m.value)
-                .map(m => ({ matchType: "property", pid: m.property.id, v: m.value }));
-            conditions = conditions.concat(properties);
-        }
-        return conditions;
-    };
+      let conditions =
+        this.state.reconQuery && this.state.reconQuery.trim() !== ""
+          ? [{ matchType: "name", v: this.state.reconQuery }]
+          : [];
 
-    const buildQuery = () => {
-        const query = { query: this.state.reconQuery };
-        if (isCustomType) query.type = this.state.reconCustomType.id;
-        else if (isNotNoType) query.type = this.state.reconType;
-        if (hasReconProperties) {
-            query.properties = this.state.reconProperties
-                .filter(m => m && m.property && m.value)
-                .map(m => ({ pid: m.property.id, v: m.value }));
-        }
-        if (isLimitValid) query.limit = reconLimit;
-        return query;
-    };
+      if (hasReconProperties) {
+        const properties = this.state.reconProperties
+          .filter((m) => m && m.property && m.value)
+          .map((m) => {
+            const allValues = [m.value];
 
-    if (manifestVersion?.includes(SPEC_VERSIONS.DRAFT_1_0)) {
+            if (m.additionalValues && m.additionalValues?.length > 0) {
+              const validAdditionalValues = m.additionalValues.filter(
+                (additionalValue) =>
+                  additionalValue && additionalValue.trim() !== ""
+              );
+              allValues.push(...validAdditionalValues);
+            }
+
+            const propertyCondition = {
+              matchType: "property",
+              propertyId: m.property?.id || m.property,
+              propertyValue: allValues?.length === 1 ? allValues[0] : allValues,
+              required: m.required || false,
+              matchQuantifier: m.operator || "any",
+              matchQualifier:undefined
+            };
+
+            if (m?.qualifier) {
+              propertyCondition.matchQualifier = m.qualifier?.id ?? m.qualifier;
+            }
+
+            return propertyCondition;
+          });
+
+        conditions = conditions.concat(properties);
+      }
+
+      return conditions;
+    };
         return {
             queries: [{
                 ...(isCustomType ? { type: this.state.reconCustomType.id } : isNotNoType ? { type: this.state.reconType } : {}),
@@ -241,9 +259,8 @@ export default class TestBench extends React.Component {
                 conditions: buildConditions()
               }]
         };
-    } else {
-        return { q0: buildQuery() };
-    }
+     
+  
 }
 
   formulateQueryUrl() {
@@ -251,9 +268,11 @@ export default class TestBench extends React.Component {
      if (!baseUrl) {
         return '#';
      }
+     
+    baseUrl = `${baseUrl.replace(/\/$/, '')}/match`;
 
      let params = {
-        queries: JSON.stringify( this.formulateReconQuery(this.props.service.manifest.versions))
+        queries: JSON.stringify( this.formulateReconQuery())
      };
      let url = new URL(baseUrl);
      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
@@ -309,31 +328,37 @@ export default class TestBench extends React.Component {
                 <div className="tabContent">
                 <Col sm={5}>
                     <Form horizontal>
-                        <FormGroup controlId="reconcileName">
-                            <Col componentClass={ControlLabel} sm={2}>Name:</Col>
-                            <Col sm={10}>
-                                <InputGroup>
+                        <FormGroup controlId={"conditions"}>
+                            <Col componentClass={ControlLabel} sm={2}>{"Conditions:"}</Col>
+                           <Col sm={10}>
+                           <Row>
+                            <Col>
                                 <FormControl
                                     type="text"
-                                    placeholder="Entity to reconcile"
+                                    placeholder={"Name"}
                                     value={this.state.reconQuery}
                                     onChange={this.onReconQueryChange} />
-                                    <InputGroup.Button><Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></InputGroup.Button>
-                                </InputGroup>
+
+                                    
+                            
+                        <PropertyMappingV2
+                          service={this.props.service}
+                          value={this.state.reconProperties}
+                          onChange={this.onReconPropertiesChange}
+                        />
+                            </Col>
+                            </Row>
                             </Col>
                         </FormGroup>
+                            
                         <FormGroup controlId="reconcileType">
                             <Col componentClass={ControlLabel} sm={2}>Type:</Col>
                             <Col sm={10}>
                                 {this.renderTypeChoices()}
                             </Col>
                         </FormGroup>
-                        <FormGroup controlId="reconcileProperties">
-                            <Col componentClass={ControlLabel} sm={2}>Properties:</Col>
-                            <Col sm={10}>
-                                <PropertyMapping service={this.props.service} value={this.state.reconProperties} onChange={this.onReconPropertiesChange} />
-                            </Col>
-                        </FormGroup>
+
+
                         <FormGroup controlId="reconcileLimit">
                             <Col componentClass={ControlLabel} sm={2}>Limit:</Col>
                             <Col sm={10}>
@@ -344,7 +369,6 @@ export default class TestBench extends React.Component {
                                     onChange={(v) => this.onReconLimitChange(v)} />
                             </Col>
                         </FormGroup>
-                        {this.props.service.manifest.versions?.includes(SPEC_VERSIONS.DRAFT_1_0) &&
                         <FormGroup controlId="reconUserLanguage" style={{ display: "flex",alignItems: "flex-end" }}>
                             <Col sm={2} componentClass={ControlLabel}>User interface language:</Col>
                             <Col sm={10}>
@@ -354,14 +378,16 @@ export default class TestBench extends React.Component {
                                     value={this.state.reconUserLanguage}
                                     onChange={(v) => this.onReconUserLanguageChange(v)} />
                             </Col>
-                        </FormGroup>}
+                        </FormGroup>
+
+                     <Col sm={3} smOffset={5}> <Button onClick={this.onSubmitReconciliation} type="submit" bsStyle="primary" disabled={!this.props.service}>Reconcile</Button></Col>
                         
                     </Form>
                 </Col>
                 <Col sm={3}>
                     <JSONTree
                             theme={jsonTheme}
-                            data={this.formulateReconQuery(this.props.service.manifest.versions)}
+                            data={this.formulateReconQuery()}
                             getItemString={(type, data, itemType, itemString) => ''}
                             shouldExpandNode={(keyName, data, level) => true}
                             hideRoot={true} />
