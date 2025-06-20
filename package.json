@@ -23,7 +23,7 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "deploy:draft": "npm run build && gh-pages -d build --dest 1.0-draft"
+    "deploy:0.2": "npm run build && gh-pages -d build --dest 0.2"
   },
   "eslintConfig": {
     "extends": "react-app"
