@@ -1,6 +1,12 @@
 import React from 'react';
 import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 
+const suggestPathMap = {
+  entity: '/suggest/entity',
+  property: '/suggest/property',
+  type: '/suggest/type',
+};
+
 export default class ReconcileSuggest extends React.Component {
    constructor() {
      super();
@@ -35,7 +41,8 @@ export default class ReconcileSuggest extends React.Component {
      if (!configuration) {
         return null;
      }
-     return configuration.service_url + configuration.service_path;
+        const path = suggestPathMap[this.props.entityClass];
+        return `${this.props.service.endpoint.replace(/\/$/, '')}${path}`;
    }
 
    onSuggestionsFetchRequested = (value) => {
@@ -73,6 +80,7 @@ export default class ReconcileSuggest extends React.Component {
    render() {
       return (
         <AsyncTypeahead id={this.props.id}
+           placeholder={this.props.placeholder}
            disabled={this.getUrl() === null}
            isLoading={this.state.isLoading}
            onSearch={this.onSuggestionsFetchRequested}

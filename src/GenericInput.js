@@ -83,7 +83,7 @@ export default class GenericInput extends React.Component {
 
     render() {
         return (this.hasAutocomplete ?
-            (<ReconcileSuggest service={this.props.service} entityClass={this.props.entityClass} onChange={this.onSuggestChange} value={this.currentValue} />)
+            (<ReconcileSuggest service={this.props.service} entityClass={this.props.entityClass} onChange={this.onSuggestChange} value={this.currentValue} placeholder={this.props.placeholder}/>)
           : (
                 (this.props.explicitSubmit !== undefined ?
                 <InputGroup>
