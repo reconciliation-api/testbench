@@ -1,6 +1,6 @@
 {
   "name": "reconciliation-testbench",
-  "homepage": "https://culturecreates.github.io/testbench/1.0-draft/",
+  "homepage": "https://culturecreates.github.io/testbench/",
   "version": "0.2.0",
   "private": true,
   "dependencies": {
