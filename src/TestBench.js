@@ -214,7 +214,7 @@ export default class TestBench extends React.Component {
     const buildConditions = () => {
       let conditions =
         this.state.reconQuery && this.state.reconQuery.trim() !== ""
-          ? [{ matchType: "name", v: this.state.reconQuery }]
+          ? [{ matchType: "name", propertyValue: this.state.reconQuery }]
           : [];
 
       if (hasReconProperties) {
