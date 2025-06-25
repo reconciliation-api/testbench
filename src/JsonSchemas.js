@@ -5533,11 +5533,11 @@ export const specSchemas = {
                     "property"
                   ]
                 },
-                "pid": {
+                "propertyId": {
                   "type": "string",
                   "description": "The identifier of the property, whose values will be compared to the values supplied. Required if 'matchType' is 'property'."
                 },
-                "v": {
+                "propertyValue": {
                   "description": "A value (or array of values) to match against the entity names or property values associated with the property on each candidate",
                   "oneOf": [
                     {
@@ -5571,7 +5571,7 @@ export const specSchemas = {
               },
               "required": [
                 "matchType",
-                "v"
+                "propertyValue"
               ]
             }
           }
