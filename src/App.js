@@ -29,7 +29,7 @@ function TestbenchTab({ servicesMap, onEndpointChange }) {
 
    return (
     <div className="tabContent">
-        <p>This form lets you test a reconciliation endpoint interactively.</p>
+        <p>This form lets you test a reconciliation endpoint interactively. Visit <a href="/0.2/">testbench v0.2</a> to test endpoints implemented with Spec 0.2.</p>
         <ReconciliationServiceInput
             onChange={handleChange}
             initialService={service || { endpoint } }
@@ -95,7 +95,7 @@ export default class App extends React.Component {
         <p style={{float: 'right'}}><a href="https://github.com/reconciliation-api/testbench">Source repository</a></p>
         <ul className="nav nav-tabs">
             <TabLink to="/" title="Services" exact="true" />
-            <TabLink to="/client/" title="Test bench" />
+            <TabLink to="/client/" title="Test bench 1.0" />
         </ul>
         <Switch>
            <Route path="/client/:endpoint">
