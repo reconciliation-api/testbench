@@ -1,4 +1,4 @@
-Reconciliation service test bench
+Reconciliation service test bench v1.0
 =================================
 
 This web application can be used to access and play with the reconciliation services described in the [Reconciliation API specifications](https://github.com/reconciliation-api/specs).
@@ -40,5 +40,5 @@ Your app is ready to be deployed!
 
 Deploys the web app on GitHub Pages. It will become available at:
 
-https://reconciliation-api.github.io/testbench/
+https://reconciliation-api.github.io/testbench/1.0/
 
