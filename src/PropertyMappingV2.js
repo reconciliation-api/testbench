@@ -69,7 +69,7 @@ export default class PropertyMappingV2 extends React.Component {
           title="Delete entire property mapping"
           style={{ position: "absolute", top: "0", right: "0", padding: "8px", color: "#9ca3af" }}
         >
-          <span className="glyphicon glyphicon-trash"></span>
+          <span className="glyphicon glyphicon-remove"></span>
         </Button>
 
         <div style={{ marginBottom: "10px", paddingRight: "30px" }}>

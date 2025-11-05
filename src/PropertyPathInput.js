@@ -160,7 +160,7 @@ export default class PropertyPathInput extends React.Component {
           service={this.props.service}
           entityClass="property"
           id={this.props.id}
-          placeholder="Property id or property path"
+          placeholder="Property id"
           value={displayValue}
           onChange={this.handleChange}
           onInputChange={this.handleInputChange}
