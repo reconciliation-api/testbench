@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
 import GenericInput from './GenericInput.js';
+import PropertyPathInput from './PropertyPathInput.js';
 import DataExtensionValue from './DataExtensionValue.js';
 import JSONTree from 'react-json-tree';
 import {jsonTheme} from './utils.js';
@@ -156,11 +157,10 @@ export default class DataExtensionTab extends React.Component {
                 <FormGroup controlId="dataExtensionProperty">
                     <Col componentClass={ControlLabel} sm={2}>Property:</Col>
                     <Col sm={10}>
-                            <GenericInput
+                            <PropertyPathInput
                                 service={this.props.service}
-                                placeholder="Property to fetch on the entity"
+                                id="data-extension-property"
                                 value={this.state.property}
-                                entityClass="property"
                                 onChange={this.onPropertyChange} />
                     </Col>
                 </FormGroup>
