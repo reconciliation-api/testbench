@@ -40,5 +40,5 @@ Your app is ready to be deployed!
 
 Deploys the web app on GitHub Pages. It will become available at:
 
-https://reconciliation-api.github.io/testbench/
+https://reconciliation-api.github.io/testbench/1.0/
 
