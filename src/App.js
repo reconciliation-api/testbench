@@ -29,7 +29,7 @@ function TestbenchTab({ servicesMap, onEndpointChange }) {
 
    return (
     <div className="tabContent">
-        <p>This form lets you test a reconciliation endpoint interactively. Visit <a href="/0.2/">testbench v0.2</a> to test endpoints implemented with Spec 0.2.</p>
+        <p>This form lets you test a reconciliation endpoint interactively. Visit <a href="/testbench/0.2/">testbench v0.2</a> to test endpoints implemented with Spec v0.2.</p>
         <ReconciliationServiceInput
             onChange={handleChange}
             initialService={service || { endpoint } }
