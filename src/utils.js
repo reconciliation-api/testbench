@@ -30,17 +30,20 @@ export const postJsonpParams = ({url,queries}) => {
 }
 
 
-export const postParams = ({url,queries}) => {
+export const postParams = ({
+   url,
+   queries,
+   userLanguage = "en"
+ }) => {
    return fetch(url, {
-   method:"POST",
-   headers: {
-     'Content-Type': 'application/x-www-form-urlencoded'
-   },
-   body: new URLSearchParams({
-     queries
-   })
-});
-}
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+           "Accept-Language": userLanguage,
+         },
+         body:queries,
+       });
+ };
 
 export const jsonTheme = {
     scheme: 'monokai',
