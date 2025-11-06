@@ -1,6 +1,6 @@
 {
   "name": "reconciliation-testbench",
-  "homepage": "https://reconciliation-api.github.io/testbench",
+  "homepage": "https://reconciliation-api.github.io/testbench/1.0",
   "version": "1.0",
   "private": true,
   "dependencies": {
