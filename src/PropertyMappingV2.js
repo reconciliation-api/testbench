@@ -144,13 +144,15 @@ export default class PropertyMappingV2 extends React.Component {
               Required
             </Checkbox>
 
-            <Button
-              bsStyle="link"
-              onClick={() => this.addValue(idx)}
-              style={{ padding: "4px 8px", fontSize: "14px" }}
-            >
-              + value
-            </Button>
+            <div style={{ display: "flex", justifyContent: "flex-end", minWidth: "100px" }}>
+              <Button
+                bsStyle="link"
+                onClick={() => this.addValue(idx)}
+                style={{ padding: "4px 8px", fontSize: "14px", textAlign: "left", minWidth: "100px" }}
+              >
+                + value
+              </Button>
+            </div>
           </div>
 
           {mapping.qualifier !== undefined && (
@@ -188,11 +190,11 @@ export default class PropertyMappingV2 extends React.Component {
 
           {/* + qualifier button */}
           {mapping.qualifier === undefined && mapping?.property?.matchQualifiers && (
-            <div style={{ marginTop: "8px", textAlign: "right" }}>
+            <div style={{ marginTop: "8px", display: "flex", justifyContent: "flex-end", minWidth: "100px" }}>
               <Button
                 bsStyle="link"
                 onClick={() => this.onFieldChange(idx, "qualifier", "")}
-                style={{ padding: "4px 8px", fontSize: "14px" }}
+                style={{ padding: "4px 8px", fontSize: "14px", textAlign: "left", minWidth: "100px" }}
               >
                 + qualifier
               </Button>
