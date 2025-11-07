@@ -113,7 +113,12 @@ export default class PropertyPathInput extends React.Component {
 
       newPath = firstPart + "/" + secondPart;
       newDisplayName = newPath;
-      valueToEmit = { id: newPath, name: newPath };
+      // For nested paths, preserve matchQualifiers from the last selected property
+      valueToEmit = {
+        id: newPath,
+        name: newPath,
+        matchQualifiers: selectedValue.matchQualifiers
+      };
     } else {
       if (this.isNestedPropertyPath(selectedId)) {
         const parts = selectedId.split("/");
