@@ -194,7 +194,10 @@ export default class PropertyMappingV2 extends React.Component {
               <div style={{ flex: 1 }}></div>
               <Button
                 bsStyle="link"
-                onClick={() => this.onFieldChange(idx, "qualifier", "")}
+                onClick={() => {
+                  const firstQualifierId = mapping?.property?.matchQualifiers?.[0]?.id || "";
+                  this.onFieldChange(idx, "qualifier", firstQualifierId);
+                }}
                 style={{ padding: "4px 8px", fontSize: "14px", flexShrink: 0, width: "40px", textAlign: "center" }}
               >
                 + qualifier
