@@ -133,6 +133,26 @@ export default class PropertyMappingV2 extends React.Component {
               </div>
             ))}
 
+          {/* Required checkbox and + value button */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <Checkbox
+              checked={mapping.required || false}
+              onChange={(e) =>
+                this.onFieldChange(idx, "required", e.target.checked)
+              }
+            >
+              Required
+            </Checkbox>
+
+            <Button
+              bsStyle="link"
+              onClick={() => this.addValue(idx)}
+              style={{ padding: "4px 8px", fontSize: "14px" }}
+            >
+              + value
+            </Button>
+          </div>
+
           {mapping.qualifier !== undefined && (
             <div style={{ marginTop: "8px", marginBottom: "8px" }}>
               <ControlLabel style={{ fontSize: "12px", color: "#666" }}>Qualifier:</ControlLabel>
@@ -166,37 +186,18 @@ export default class PropertyMappingV2 extends React.Component {
             </div>
           )}
 
-          {/* Action buttons and checkbox */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
-            <Checkbox
-              checked={mapping.required || false}
-              onChange={(e) =>
-                this.onFieldChange(idx, "required", e.target.checked)
-              }
-            >
-              Required
-            </Checkbox>
-
-            <div style={{ display: "flex", gap: "8px" }}>
+          {/* + qualifier button */}
+          {mapping.qualifier === undefined && mapping?.property?.matchQualifiers && (
+            <div style={{ marginTop: "8px", textAlign: "right" }}>
               <Button
                 bsStyle="link"
-                onClick={() => this.addValue(idx)}
+                onClick={() => this.onFieldChange(idx, "qualifier", "")}
                 style={{ padding: "4px 8px", fontSize: "14px" }}
               >
-                + value
+                + qualifier
               </Button>
-
-              {mapping.qualifier === undefined && mapping?.property?.matchQualifiers && (
-                <Button
-                  bsStyle="link"
-                  onClick={() => this.onFieldChange(idx, "qualifier", "")}
-                  style={{ padding: "4px 8px", fontSize: "14px" }}
-                >
-                  + qualifier
-                </Button>
-              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     ));
