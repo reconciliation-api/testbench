@@ -18,11 +18,13 @@ export default class ReconcileSuggest extends React.Component {
    }
 
    getValue() {
-     if (this.props.onChange !== undefined) {
-        return this.props.value;
-     } else {
-        return this.state.value;
+     let value = this.props.onChange !== undefined ? this.props.value : this.state.value;
+
+     if (value && !value.name && value.id) {
+        return { ...value, name: value.id };
      }
+
+     return value;
    }
 
    get manifest() {
@@ -47,7 +49,16 @@ export default class ReconcileSuggest extends React.Component {
 
    onSuggestionsFetchRequested = (value) => {
       let url = this.getUrl();
-      let params = {'prefix':value};
+
+      // If building a nested path (contains /), only search for text after last /
+      let searchPrefix = value;
+      if (value && value.includes('/')) {
+        const lastSlashIndex = value.lastIndexOf('/');
+        searchPrefix = value.substring(lastSlashIndex + 1);
+      }
+
+      let params = {'prefix': searchPrefix};
+
       if (url === null) {
          return;
       }
@@ -68,12 +79,35 @@ export default class ReconcileSuggest extends React.Component {
    };
 
    onChange = (newValue) => {
+     let selectedValue = newValue[0];
+
+     if (selectedValue && selectedValue.customOption) {
+       selectedValue = {
+         id: selectedValue.name,
+         name: selectedValue.name,
+         customOption: false
+       };
+     }
+
+     if (selectedValue && !selectedValue.name && selectedValue.id) {
+       selectedValue = {
+         ...selectedValue,
+         name: selectedValue.id
+       };
+     }
+
      if (this.props.onChange === undefined) {
        this.setState({
-         value: newValue[0]
+         value: selectedValue
        });
      } else {
-        this.props.onChange(newValue[0]);
+        this.props.onChange(selectedValue);
+     }
+   };
+
+   onInputChange = (text, e) => {
+     if (this.props.onInputChange) {
+       this.props.onInputChange(text, e);
      }
    };
 
@@ -84,19 +118,31 @@ export default class ReconcileSuggest extends React.Component {
            disabled={this.getUrl() === null}
            isLoading={this.state.isLoading}
            onSearch={this.onSuggestionsFetchRequested}
+           onInputChange={this.onInputChange}
            options={this.state.suggestions}
            labelKey="name"
            filterBy={(option,props) => true}
            selected={this.getValue() ? [this.getValue()] : []}
            onChange={this.onChange}
-           renderMenuItemChildren={(option, props, index) => 
-              <>
-                 <span className="suggestItemId">{option.id}</span>
-                 {Array.isArray(option.broader) && option.broader.length && <span className="suggestItemId">{option.broader.map(e => e.id).join(', ')} &gt; </span>}
-                 <span className="suggestItemLabel">{option.name}</span><br />
-                 <span className="suggestItemDescription">{option.description}</span>
-              </>
-           }
+           allowNew={this.props.allowNew}
+           newSelectionPrefix={this.props.allowNew ? "Use custom path: " : undefined}
+           renderMenuItemChildren={(option, props, index) => {
+              if (option.customOption) {
+                return (
+                  <>
+                    <span className="suggestItemLabel">{option.label}</span>
+                  </>
+                );
+              }
+              return (
+                <>
+                  <span className="suggestItemId">{option.id}</span>
+                  {Array.isArray(option.broader) && option.broader.length && <span className="suggestItemId">{option.broader.map(e => e.id).join(', ')} &gt; </span>}
+                  <span className="suggestItemLabel">{option.name}</span><br />
+                  <span className="suggestItemDescription">{option.description}</span>
+                </>
+              );
+           }}
          />
       );
    }

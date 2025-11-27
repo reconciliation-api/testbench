@@ -41,10 +41,18 @@ export default class Candidate extends React.Component {
       <div>
         <div className="candidateField">Types</div>
         <div className="candidateValue">
-          {types.map((type, idx) => [
-            idx > 0 && ", ",
-            `${type.name} (${type.id})`,
-          ])}
+          {types.map((type, idx) => (
+            <span key={idx}>
+              {idx > 0 && ", "}
+              {type.id && type.id.includes("://") ? (
+                <a href={type.id} target="_blank" rel="noopener noreferrer">
+                  {type.name}
+                </a>
+              ) : (
+                type.name
+              )}
+            </span>
+          ))}
         </div>
       </div>
     );

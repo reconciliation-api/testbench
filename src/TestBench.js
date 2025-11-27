@@ -19,6 +19,7 @@ import JSONTree from 'react-json-tree';
 import { getSchema } from './JsonValidator.js';
 import { jsonTheme } from './utils.js';
 import PropertyMappingV2 from './PropertyMappingV2.js';
+import PropertyPathInput from './PropertyPathInput.js';
 import { Row } from 'react-bootstrap';
 
 export default class TestBench extends React.Component {
@@ -289,7 +290,7 @@ export default class TestBench extends React.Component {
           checked={current === t.id}
           onChange={this.onReconTypeChange}>
         {t.name}<br />
-        {Array.isArray(t.broader) && t.broader.length && <span className="reconTypeId">{t.broader.map(e => e.id).join(', ')} &gt; </span>}<span className="reconTypeId">{t.id}</span>
+        {Array.isArray(t.broader) && t.broader.length > 0 && <span className="reconTypeId">{t.broader.map(e => e.id).join(', ')} &gt; </span>}<span className="reconTypeId">{t.id}</span>
       </Radio>
     );
     if (this.hasTypeSuggest) {
@@ -418,7 +419,7 @@ export default class TestBench extends React.Component {
                     <FormGroup controlId="suggestPropertyTestBench">
                         <Col componentClass={ControlLabel} sm={1}>Property:</Col>
                         <Col sm={11}>
-                            <ReconcileSuggest service={this.props.service} entityClass="property" id="property-suggest-test" />
+                            <PropertyPathInput service={this.props.service} id="property-suggest-test" />
                         </Col>
                     </FormGroup>
                 </Form>
