@@ -90,7 +90,6 @@ export default class PropertyPathInput extends React.Component {
 
     const selectedId = selectedValue.id;
     const selectedName = selectedValue.name || selectedId;
-    const currentText = this.state.lastInputText;
 
     let newPath;
     let newDisplayName;
