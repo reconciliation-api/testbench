@@ -1,13 +1,14 @@
 Reconciliation service test bench v1.0
-=================================
+===================================
 
 This web application can be used to access and play with the reconciliation services described in the [Reconciliation API specifications](https://github.com/reconciliation-api/specs).
 It is meant to be a companion to the [W3C Entity Reconciliation Community Group](https://www.w3.org/community/reconciliation/).
 
 This application is developed with React and calls to the reconciliation services are made directly from the browser.
 It can be used at:
+https://reconciliation-api.github.io/testbench/1.0
 
-https://reconciliation-api.github.io/testbench/
+
 
 ## Available Scripts
 
@@ -42,3 +43,10 @@ Deploys the web app on GitHub Pages. It will become available at:
 
 https://reconciliation-api.github.io/testbench/1.0/
 
+Note: There is a redirect in the gh-pages branch that redirects https://reconciliation-api.github.io/testbench/ to https://reconciliation-api.github.io/testbench/0.2.  This redirect should always point to the lastest official version of the spec.
+
+## Support for Test bench v0.2
+The previous Reconciliation service test bench v0.2 is available at:
+https://reconciliation-api.github.io/testbench/0.2
+
+The code is maintained in branch `testbench-0.2`. From that branch the code may be maintained and  deployed using the same scripts. The files are deployed to the Github Pages subfolder testbench/0.2.
