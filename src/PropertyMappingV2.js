@@ -126,12 +126,34 @@ export default class PropertyMappingV2 extends React.Component {
                   onClick={() => this.deleteValue(idx, valueIdx)}
                   bsStyle="link"
                   title="Delete value"
-                  style={{ padding: "8px", color: "#9ca3af", flexShrink: 0 }}
+                  style={{ padding: "8px", color: "#9ca3af", flexShrink: 0, width: "40px" }}
                 >
                   <span className="glyphicon glyphicon-trash"></span>
                 </Button>
               </div>
             ))}
+
+          {/* Required checkbox and + value button */}
+          <div style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center", paddingRight: "30px" }}>
+            <div style={{ flex: 1 }}>
+              <Checkbox
+                checked={mapping.required || false}
+                onChange={(e) =>
+                  this.onFieldChange(idx, "required", e.target.checked)
+                }
+              >
+                Required
+              </Checkbox>
+            </div>
+
+            <Button
+              bsStyle="link"
+              onClick={() => this.addValue(idx)}
+              style={{ padding: "4px 8px", fontSize: "14px", flexShrink: 0, width: "40px", textAlign: "center" }}
+            >
+              + value
+            </Button>
+          </div>
 
           {mapping.qualifier !== undefined && (
             <div style={{ marginTop: "8px", marginBottom: "8px" }}>
@@ -166,37 +188,22 @@ export default class PropertyMappingV2 extends React.Component {
             </div>
           )}
 
-          {/* Action buttons and checkbox */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
-            <Checkbox
-              checked={mapping.required || false}
-              onChange={(e) =>
-                this.onFieldChange(idx, "required", e.target.checked)
-              }
-            >
-              Required
-            </Checkbox>
-
-            <div style={{ display: "flex", gap: "8px" }}>
+          {/* + qualifier button */}
+          {mapping.qualifier === undefined && mapping?.property?.matchQualifiers && (
+            <div style={{ marginTop: "8px", display: "flex", gap: "8px", alignItems: "center", paddingRight: "30px" }}>
+              <div style={{ flex: 1 }}></div>
               <Button
                 bsStyle="link"
-                onClick={() => this.addValue(idx)}
-                style={{ padding: "4px 8px", fontSize: "14px" }}
+                onClick={() => {
+                  const firstQualifierId = mapping?.property?.matchQualifiers?.[0]?.id || "";
+                  this.onFieldChange(idx, "qualifier", firstQualifierId);
+                }}
+                style={{ padding: "4px 8px", fontSize: "14px", flexShrink: 0, width: "40px", textAlign: "center" }}
               >
-                + value
+                + qualifier
               </Button>
-
-              {mapping.qualifier === undefined && mapping?.property?.matchQualifiers && (
-                <Button
-                  bsStyle="link"
-                  onClick={() => this.onFieldChange(idx, "qualifier", "")}
-                  style={{ padding: "4px 8px", fontSize: "14px" }}
-                >
-                  + qualifier
-                </Button>
-              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     ));
