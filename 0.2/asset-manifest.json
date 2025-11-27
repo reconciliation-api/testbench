@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/testbench/static/css/main.ebd91392.css",
-    "main.js": "/testbench/static/js/main.c18d9a84.js",
-    "static/media/glyphicons-halflings-regular.svg": "/testbench/static/media/glyphicons-halflings-regular.060b2710bdbbe3dfe48b.svg",
-    "static/media/glyphicons-halflings-regular.ttf": "/testbench/static/media/glyphicons-halflings-regular.4692b9ec53fd5972caa2.ttf",
-    "static/media/glyphicons-halflings-regular.woff": "/testbench/static/media/glyphicons-halflings-regular.82b1212e45a2bc35dd73.woff",
-    "static/media/glyphicons-halflings-regular.eot": "/testbench/static/media/glyphicons-halflings-regular.5be1347c682810f199c7.eot",
-    "static/media/glyphicons-halflings-regular.woff2": "/testbench/static/media/glyphicons-halflings-regular.be810be3a3e14c682a25.woff2",
-    "index.html": "/testbench/index.html",
-    "main.ebd91392.css.map": "/testbench/static/css/main.ebd91392.css.map",
-    "main.c18d9a84.js.map": "/testbench/static/js/main.c18d9a84.js.map"
+    "main.css": "/testbench/0.2/static/css/main.a4b917d6.css",
+    "main.js": "/testbench/0.2/static/js/main.c18d9a84.js",
+    "static/media/glyphicons-halflings-regular.svg": "/testbench/0.2/static/media/glyphicons-halflings-regular.060b2710bdbbe3dfe48b.svg",
+    "static/media/glyphicons-halflings-regular.ttf": "/testbench/0.2/static/media/glyphicons-halflings-regular.4692b9ec53fd5972caa2.ttf",
+    "static/media/glyphicons-halflings-regular.woff": "/testbench/0.2/static/media/glyphicons-halflings-regular.82b1212e45a2bc35dd73.woff",
+    "static/media/glyphicons-halflings-regular.eot": "/testbench/0.2/static/media/glyphicons-halflings-regular.5be1347c682810f199c7.eot",
+    "static/media/glyphicons-halflings-regular.woff2": "/testbench/0.2/static/media/glyphicons-halflings-regular.be810be3a3e14c682a25.woff2",
+    "index.html": "/testbench/0.2/index.html",
+    "main.a4b917d6.css.map": "/testbench/0.2/static/css/main.a4b917d6.css.map",
+    "main.c18d9a84.js.map": "/testbench/0.2/static/js/main.c18d9a84.js.map"
   },
   "entrypoints": [
-    "static/css/main.ebd91392.css",
+    "static/css/main.a4b917d6.css",
     "static/js/main.c18d9a84.js"
   ]
 }
