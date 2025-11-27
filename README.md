@@ -45,7 +45,7 @@ https://reconciliation-api.github.io/testbench/1.0/
 
 Note: There is a redirect in the gh-pages branch that redirects https://reconciliation-api.github.io/testbench/ to https://reconciliation-api.github.io/testbench/0.2.  This redirect should always point to the lastest official version of the spec.
 
-## Support for Test bench v0.2
+## Support for test bench v0.2
 The previous Reconciliation service test bench v0.2 is available at:
 https://reconciliation-api.github.io/testbench/0.2
 
