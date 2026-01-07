@@ -10,16 +10,16 @@ import Button from 'react-bootstrap/lib/Button';
 import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
-import ReconcileSuggest from './ReconcileSuggest.js';
-import Candidate from './Candidate.js';
-import GenericInput from './GenericInput.js';
-import PreviewRenderer from './PreviewRenderer.js';
-import DataExtensionTab from './DataExtensionTab.js';
+import ReconcileSuggest from './ReconcileSuggest';
+import Candidate from './Candidate';
+import GenericInput from './GenericInput';
+import PreviewRenderer from './PreviewRenderer';
+import DataExtensionTab from './DataExtensionTab';
 import JSONTree from 'react-json-tree';
-import { getSchema } from './JsonValidator.js';
-import { jsonTheme } from './utils.js';
-import PropertyMappingV2 from './PropertyMappingV2.js';
-import PropertyPathInput from './PropertyPathInput.js';
+import { getSchema } from './JsonValidator';
+import { jsonTheme } from './utils';
+import PropertyMappingV2 from './PropertyMappingV2';
+import PropertyPathInput from './PropertyPathInput';
 import { Row } from 'react-bootstrap';
 
 export default class TestBench extends React.Component {

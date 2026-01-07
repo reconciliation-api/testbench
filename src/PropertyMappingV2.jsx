@@ -3,7 +3,7 @@ import FormControl from "react-bootstrap/lib/FormControl";
 import Button from "react-bootstrap/lib/Button";
 import ControlLabel from "react-bootstrap/lib/ControlLabel";
 import Checkbox from "react-bootstrap/lib/Checkbox";
-import PropertyPathInput from "./PropertyPathInput.js";
+import PropertyPathInput from "./PropertyPathInput";
 import { Col } from "react-bootstrap";
 
 

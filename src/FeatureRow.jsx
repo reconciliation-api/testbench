@@ -1,9 +1,9 @@
 
 import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
-import FeatureCell from './FeatureCell.js';
+import FeatureCell from './FeatureCell';
 import fetchJsonp from 'fetch-jsonp';
-import ReconciliationService from './ReconciliationService.js';
+import ReconciliationService from './ReconciliationService';
 
 export default class FeatureRow extends React.Component {
    constructor() {

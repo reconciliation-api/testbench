@@ -1,5 +1,5 @@
 import React from "react";
-import ReconcileSuggest from "./ReconcileSuggest.js";
+import ReconcileSuggest from "./ReconcileSuggest";
 
 /**
  * Component for building nested property paths like schema:address/schema:postalCode

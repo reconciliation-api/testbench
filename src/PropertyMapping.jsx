@@ -2,7 +2,7 @@
 import React from 'react';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Button from 'react-bootstrap/lib/Button';
-import GenericInput from './GenericInput.js';
+import GenericInput from './GenericInput';
 
 export default class PropertyMapping extends React.Component {
 

@@ -7,7 +7,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import HelpBlock from 'react-bootstrap/lib/HelpBlock';
 import Col from 'react-bootstrap/lib/Col';
 import fetchJsonp from 'fetch-jsonp';
-import ReconciliationService from './ReconciliationService.js';
+import ReconciliationService from './ReconciliationService';
 
 export default class ReconciliationServiceInput extends React.Component {
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
-import FeatureTable from './FeatureTable.js';
-import FeatureRow from './FeatureRow.js';
-import TabLink from './TabLink.js';
-import ReconciliationServiceInput from './ReconciliationServiceInput.js';
-import TestBench from './TestBench.js';
+import FeatureTable from './FeatureTable';
+import FeatureRow from './FeatureRow';
+import TabLink from './TabLink';
+import ReconciliationServiceInput from './ReconciliationServiceInput';
+import TestBench from './TestBench';
 import { HashRouter, Switch, Route, useParams, useHistory } from "react-router-dom";
 
 

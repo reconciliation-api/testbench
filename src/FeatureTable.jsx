@@ -2,7 +2,7 @@ import React from 'react';
 import Table from 'react-bootstrap/lib/Table';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
-import FeatureRow from './FeatureRow.js';
+import FeatureRow from './FeatureRow';
 
 class Row {
     constructor(endpoint, name, documentation, source_url, wd_uri) {

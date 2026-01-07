@@ -6,12 +6,12 @@ import Button from 'react-bootstrap/lib/Button';
 import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
-import GenericInput from './GenericInput.js';
-import PropertyPathInput from './PropertyPathInput.js';
-import DataExtensionValue from './DataExtensionValue.js';
+import GenericInput from './GenericInput';
+import PropertyPathInput from './PropertyPathInput';
+import DataExtensionValue from './DataExtensionValue';
 import JSONTree from 'react-json-tree';
-import {jsonTheme} from './utils.js';
-import { getSchema } from './JsonValidator.js';
+import {jsonTheme} from './utils';
+import { getSchema } from './JsonValidator';
 
 export default class DataExtensionTab extends React.Component {
 
