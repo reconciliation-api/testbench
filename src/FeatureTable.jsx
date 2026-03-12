@@ -142,17 +142,17 @@ export default class FeatureTable extends React.Component {
        return (
          <thead>
            <tr>
-             <td>Name</td>
-             <td>Endpoint</td>
-             <td>API version</td>
-             <td>CORS</td>
-             <td>JSONP</td>
-             <td>View entities</td>
-             <td>Suggest entities</td>
-             <td>Suggest types</td>
-             <td>Suggest properties</td>
-             <td>Preview entities</td>
-             <td>Extend data</td>
+             <th scope="col">Name</th>
+             <th scope="col">Endpoint</th>
+             <th scope="col">API version</th>
+             <th scope="col">CORS</th>
+             <th scope="col">JSONP</th>
+             <th scope="col">View entities</th>
+             <th scope="col">Suggest entities</th>
+             <th scope="col">Suggest types</th>
+             <th scope="col">Suggest properties</th>
+             <th scope="col">Preview entities</th>
+             <th scope="col">Extend data</th>
            </tr>
          </thead>
        );
