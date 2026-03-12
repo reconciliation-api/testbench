@@ -12,15 +12,34 @@ export default class FeatureRow extends React.Component {
         reacheableCORS: 'checking',
         reacheableJSONP: 'maybe',
         manifest: {},
-      }; 
+        corsTimeout: false,
+      };
    }
 
    componentDidMount() {
-      fetch(this.props.endpoint, { timeout: 5000 })
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+      fetch(this.props.endpoint, { signal: controller.signal })
         .then(response => response.json())
-        .then(response => this.setState({manifest: response, reacheableCORS: true}))
+        .then(response => {
+          clearTimeout(timeoutId);
+          this.setState({manifest: response, reacheableCORS: true});
+          if (this.props.onVersionDetected) {
+            const service = new ReconciliationService(this.props.endpoint, response, true);
+            this.props.onVersionDetected(this.props.endpoint, service.latestCompatibleVersion);
+          }
+        })
         .catch(error => {
-           this.setState({reacheableCORS: false});
+          clearTimeout(timeoutId);
+          const isTimeout = error.name === 'AbortError';
+          this.setState({
+            reacheableCORS: false,
+            corsTimeout: isTimeout
+          });
+          if (this.props.onVersionDetected) {
+            this.props.onVersionDetected(this.props.endpoint, isTimeout ? 'timeout' : null);
+          }
       });
       if (this.props.jsonp) {
         this.checkJsonp();
@@ -31,7 +50,13 @@ export default class FeatureRow extends React.Component {
       this.setState({reacheableJSONP: 'checking'});
       fetchJsonp(this.props.endpoint)
         .then(response => response.json())
-        .then(response => this.setState({manifest: response, reacheableJSONP: true}))
+        .then(response => {
+          this.setState({manifest: response, reacheableJSONP: true});
+          if (this.props.onVersionDetected && this.state.reacheableCORS !== true) {
+            const service = new ReconciliationService(this.props.endpoint, response, false);
+            this.props.onVersionDetected(this.props.endpoint, service.latestCompatibleVersion);
+          }
+        })
         .catch(error => this.setState({reacheableJSONP: false}));
    }
 
@@ -113,9 +138,18 @@ export default class FeatureRow extends React.Component {
    }
 
    render() {
+      const showTimeoutWarning = this.state.corsTimeout || this.props.timedOut;
+
       return (
-        <tr>
-            <td>{this.nameCell()}</td>
+        <tr style={showTimeoutWarning ? { backgroundColor: '#fff3cd' } : {}}>
+            <td>
+              {this.nameCell()}
+              {showTimeoutWarning && (
+                <div style={{ fontSize: '0.85em', color: '#856404' }}>
+                  <span className="glyphicon glyphicon-time"></span> Connection timeout
+                </div>
+              )}
+            </td>
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench" disabled={!this.isReacheable}><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
 	    <td className={'featureCell'}>{this.reconciliationService().latestCompatibleVersion || '?'}</td>
             <FeatureCell value={this.state.reacheableCORS} />

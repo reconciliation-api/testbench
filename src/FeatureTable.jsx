@@ -27,6 +27,8 @@ export default class FeatureTable extends React.Component {
          services: [],
          showAddServiceDialog: false,
          refreshing: false,
+         serviceVersions: {},
+         showTables: false,
        };
 
        this.sparql_query = (
@@ -44,7 +46,9 @@ export default class FeatureTable extends React.Component {
 
     refreshServicesFromWD = (method) => {
        this.setState({
-         refreshing: true
+         refreshing: true,
+         showTables: false,
+         serviceVersions: {}
        });
        let url = new URL("https://query.wikidata.org/sparql");
        let params = {query:this.sparql_query, format: 'json'};
@@ -66,7 +70,7 @@ export default class FeatureTable extends React.Component {
 
        promise
         .then(result => result.json())
-        .then(result =>
+        .then(result => {
             this.setState({
               services: result.results.bindings.map(entry =>
                 new Row(entry.endpoint.value, entry.serviceLabel.value,
@@ -74,16 +78,101 @@ export default class FeatureTable extends React.Component {
                     'source' in entry ? entry.source.value : undefined,
                     entry.service.value)),
               refreshing: false
-           })
-        )
+           });
+
+           setTimeout(() => {
+             this.setState({ showTables: true });
+           }, 1500);
+        })
         .catch(error => {
            console.log(error);
-           this.setState({ refreshing: false });
+           this.setState({
+             refreshing: false,
+             showTables: true
+           });
         });
     }
 
     componentDidMount() {
        this.refreshServicesFromWD('GET');
+
+       setTimeout(() => {
+         this.setState({ showTables: true });
+       }, 1500);
+    }
+
+    handleVersionDetected = (endpoint, version) => {
+       this.setState(prevState => ({
+         serviceVersions: {
+           ...prevState.serviceVersions,
+           [endpoint]: version
+         }
+       }));
+    }
+
+    isVersion1x = (version) => {
+       if (!version) return false;
+       return version.startsWith('1.');
+    }
+
+    classifyServices = () => {
+       const confirmed = [];
+       const pending = [];
+
+       this.state.services.forEach(row => {
+         const version = this.state.serviceVersions[row.endpoint];
+
+         if (version === undefined) {
+           pending.push(row);
+         } else if (version === 'timeout') {
+           pending.push({ ...row, timedOut: true });
+         } else if (version === null || !this.isVersion1x(version)) {
+           // Intentionally exclude services that do not have a confirmed 1.x version.
+         } else {
+           confirmed.push(row);
+         }
+       });
+
+       confirmed.sort((a, b) => a.name.localeCompare(b.name));
+
+       return { confirmed, pending };
+    }
+
+    renderTableHeader = () => {
+       return (
+         <thead>
+           <tr>
+             <th scope="col">Name</th>
+             <th scope="col">Endpoint</th>
+             <th scope="col">API version</th>
+             <th scope="col">CORS</th>
+             <th scope="col">JSONP</th>
+             <th scope="col">View entities</th>
+             <th scope="col">Suggest entities</th>
+             <th scope="col">Suggest types</th>
+             <th scope="col">Suggest properties</th>
+             <th scope="col">Preview entities</th>
+             <th scope="col">Extend data</th>
+           </tr>
+         </thead>
+       );
+    }
+
+    renderFeatureRow = (row) => {
+       return (
+         <FeatureRow
+           endpoint={row.endpoint}
+           name={row.name}
+           documentation={row.documentation}
+           source_url={row.source_url}
+           wd_uri={row.wd_uri}
+           jsonp={row.jsonp}
+           onSelect={this.props.onSelect}
+           onVersionDetected={this.handleVersionDetected}
+           timedOut={row.timedOut}
+           key={row.wd_uri + ' ' + row.endpoint + (row.jsonp ? ' jsonp' : ' cors')}
+         />
+       );
     }
 
     loadAllJsonp = () => {
@@ -109,42 +198,57 @@ export default class FeatureTable extends React.Component {
     }
 
     render() {
+      const { confirmed, pending } = this.classifyServices();
+
       return (
         <>
           <p>Due to <a href="https://en.wikipedia.org/wiki/JSONP#Security_concerns">a security risk inherent to JSONP</a>, only endpoints supporting <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> are loaded by default. You can click the{' '}
           <span className="glyphicon glyphicon-search"></span> button in each row to attempt to load the service via <a href="https://en.wikipedia.org/wiki/JSONP">JSONP</a>.
           Note that a malicious endpoint could use JSONP to execute arbitrary JavaScript code in this page. If you trust all the reconciliation services listed here, you can also <Button onClick={this.loadAllJsonp} bsSize="xsmall">load all endpoints via JSONP</Button>.
           </p>
-        <Table striped bordered hover>
-           <thead>
-             <tr>
-               <td>Name</td>
-               <td>Endpoint</td>
-	       <td>API version</td>
-               <td>CORS</td>
-               <td>JSONP</td>
-               <td>View entities</td>
-               <td>Suggest entities</td>
-               <td>Suggest types</td>
-               <td>Suggest properties</td>
-               <td>Preview entities</td>
-               <td>Extend data</td>
-             </tr>
-           </thead>
-           <tbody>
-              {this.state.services.map(
-                row => <FeatureRow
-                        endpoint={row.endpoint}
-                        name={row.name}
-                        documentation={row.documentation}
-                        source_url={row.source_url}
-                        wd_uri={row.wd_uri}
-                        jsonp={row.jsonp}
-                        onSelect={this.props.onSelect}
-                        key={row.wd_uri+' '+row.endpoint+(row.jsonp ? ' jsonp' : ' cors')} />)
-               }
-           </tbody>
-        </Table>
+
+          {!this.state.showTables ? (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <span className="glyphicon glyphicon-hourglass" style={{ fontSize: '24px' }}></span>
+              <p>Loading endpoints...</p>
+            </div>
+          ) : (
+            <>
+              {confirmed.length > 0 && (
+                <>
+                  <h3>Version 1.x Endpoints ({confirmed.length})</h3>
+                  <Table striped bordered hover>
+                    {this.renderTableHeader()}
+                    <tbody>
+                      {confirmed.map(row => this.renderFeatureRow(row))}
+                    </tbody>
+                  </Table>
+                </>
+              )}
+
+              {pending.length > 0 && (
+                <>
+                  <h3>Pending Endpoints ({pending.length})</h3>
+                  <p style={{ fontSize: '0.9em', color: '#666' }}>
+                    These endpoints are still being checked or have timed out.
+                  </p>
+                  <Table striped bordered hover>
+                    {this.renderTableHeader()}
+                    <tbody>
+                      {pending.map(row => this.renderFeatureRow(row))}
+                    </tbody>
+                  </Table>
+                </>
+              )}
+
+              {confirmed.length === 0 && pending.length === 0 && this.state.services.length > 0 && (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                  <p>No version 1.x endpoints available at this time.</p>
+                </div>
+              )}
+            </>
+          )}
+
         <Button onClick={this.openAddServiceDialog}><span className="glyphicon glyphicon-plus"></span> Add a service</Button>&nbsp;&nbsp;&nbsp;
         <Button onClick={() => this.refreshServicesFromWD('POST')} disabled={this.state.refreshing}><span className="glyphicon glyphicon-refresh"></span> {this.state.refreshing ? 'Refreshing…' : 'Refresh table'}</Button>
 
