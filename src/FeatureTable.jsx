@@ -127,6 +127,7 @@ export default class FeatureTable extends React.Component {
          } else if (version === 'timeout') {
            pending.push({ ...row, timedOut: true });
          } else if (version === null || !this.isVersion1x(version)) {
+           // Intentionally exclude services that do not have a confirmed 1.x version.
          } else {
            confirmed.push(row);
          }
