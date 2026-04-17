@@ -2,7 +2,6 @@
 import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import FeatureCell from './FeatureCell';
-import fetchJsonp from 'fetch-jsonp';
 import ReconciliationService from './ReconciliationService';
 
 export default class FeatureRow extends React.Component {
@@ -10,7 +9,6 @@ export default class FeatureRow extends React.Component {
       super();
       this.state = {
         reacheableCORS: 'checking',
-        reacheableJSONP: 'maybe',
         manifest: {},
         corsTimeout: false,
       };
@@ -41,23 +39,6 @@ export default class FeatureRow extends React.Component {
             this.props.onVersionDetected(this.props.endpoint, isTimeout ? 'timeout' : null);
           }
       });
-      if (this.props.jsonp) {
-        this.checkJsonp();
-      }
-   }
-
-   checkJsonp = () => {
-      this.setState({reacheableJSONP: 'checking'});
-      fetchJsonp(this.props.endpoint)
-        .then(response => response.json())
-        .then(response => {
-          this.setState({manifest: response, reacheableJSONP: true});
-          if (this.props.onVersionDetected && this.state.reacheableCORS !== true) {
-            const service = new ReconciliationService(this.props.endpoint, response, false);
-            this.props.onVersionDetected(this.props.endpoint, service.latestCompatibleVersion);
-          }
-        })
-        .catch(error => this.setState({reacheableJSONP: false}));
    }
 
    suggestSettings() {
@@ -65,7 +46,7 @@ export default class FeatureRow extends React.Component {
    }
 
    get isReacheable() {
-      return this.state.reacheableCORS === true || this.state.reacheableJSONP === true;
+      return this.state.reacheableCORS === true;
    }
    
    hasView() {
@@ -153,7 +134,6 @@ export default class FeatureRow extends React.Component {
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench" disabled={!this.isReacheable}><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
 	    <td className={'featureCell'}>{this.reconciliationService().latestCompatibleVersion || '?'}</td>
             <FeatureCell value={this.state.reacheableCORS} />
-            <FeatureCell value={this.state.reacheableJSONP} onClick={this.checkJsonp} />
             <FeatureCell value={this.hasView()} />
             <FeatureCell value={this.hasSuggestEntity()} />
             <FeatureCell value={this.hasSuggestType()} />
