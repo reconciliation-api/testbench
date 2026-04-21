@@ -6,7 +6,6 @@ import FormControl from 'react-bootstrap/lib/FormControl';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import HelpBlock from 'react-bootstrap/lib/HelpBlock';
 import Col from 'react-bootstrap/lib/Col';
-import fetchJsonp from 'fetch-jsonp';
 import ReconciliationService from './ReconciliationService';
 
 export default class ReconciliationServiceInput extends React.Component {
@@ -50,11 +49,7 @@ export default class ReconciliationServiceInput extends React.Component {
      fetch(endpoint)
       .then(result => result.json())
       .then(result => this._setService(endpoint, result, true))
-      .catch(e =>
-	     fetchJsonp(endpoint)
-	      .then(result => result.json())
-	      .then(result => this._setService(endpoint, result, false))
-	      .catch(e => this._setError(endpoint, e)));
+      .catch(e => this._setError(endpoint, e));
   }
 
   _setService(endpoint, manifest, cors) {
@@ -90,7 +85,7 @@ export default class ReconciliationServiceInput extends React.Component {
   getMessage() {
      let message = '';
      if (this.getValidationState() === 'error') {
-        message = 'The endpoint MUST return a JSON document describing the service, accessible vîa CORS or JSONP.';
+        message = 'The endpoint MUST return a JSON document describing the service, accessible via CORS.';
         let endpoint = this.state.service.endpoint;
         if (endpoint !== undefined && (
                 endpoint.startsWith('http://')
