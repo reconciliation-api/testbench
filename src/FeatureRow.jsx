@@ -24,7 +24,7 @@ export default class FeatureRow extends React.Component {
           clearTimeout(timeoutId);
           this.setState({manifest: response, reacheableCORS: true});
           if (this.props.onVersionDetected) {
-            const service = new ReconciliationService(this.props.endpoint, response, true);
+            const service = new ReconciliationService(this.props.endpoint, response);
             this.props.onVersionDetected(this.props.endpoint, service.latestCompatibleVersion);
           }
         })
@@ -86,7 +86,7 @@ export default class FeatureRow extends React.Component {
    }
 
    reconciliationService() {
-      return new ReconciliationService(this.props.endpoint, this.state.manifest, this.state.reacheableCORS);
+      return new ReconciliationService(this.props.endpoint, this.state.manifest);
    }
 
    nameCell() {

@@ -4,10 +4,9 @@ import { specVersions } from './JsonSchemas.js';
 import { getSchema } from './JsonValidator.js';
 
 export default class ReconciliationService {
-    constructor(endpoint, manifest, cors) {
+    constructor(endpoint, manifest) {
        this.endpoint = endpoint;
        this.manifest = manifest;
-       this.cors = cors;
 
        // test the service's manifest against manifest schemas
        // for all known versions of the specs, in order.

@@ -37,7 +37,7 @@ export default class ReconciliationServiceInput extends React.Component {
      clearTimeout(this.timer);
 
      this.setState({
-	service: new ReconciliationService(e.target.value, undefined, undefined),
+	service: new ReconciliationService(e.target.value, undefined),
         error: undefined
      });
  
@@ -48,13 +48,13 @@ export default class ReconciliationServiceInput extends React.Component {
      let endpoint = this.state.service.endpoint;
      fetch(endpoint)
       .then(result => result.json())
-      .then(result => this._setService(endpoint, result, true))
+      .then(result => this._setService(endpoint, result))
       .catch(e => this._setError(endpoint, e));
   }
 
-  _setService(endpoint, manifest, cors) {
+  _setService(endpoint, manifest) {
     if(this.state.service.endpoint === endpoint) {
-	let service = new ReconciliationService(endpoint, manifest, cors);
+	let service = new ReconciliationService(endpoint, manifest);
         this.setState({
 	  service: service 
         });
