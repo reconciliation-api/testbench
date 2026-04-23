@@ -11,11 +11,6 @@ class Row {
        this.documentation = documentation;
        this.source_url = source_url;
        this.wd_uri = wd_uri;
-       this.jsonp = false;
-    }
-
-    useJsonp() {
-       this.jsonp = true;
     }
 }
 
@@ -146,7 +141,6 @@ export default class FeatureTable extends React.Component {
              <th scope="col">Endpoint</th>
              <th scope="col">API version</th>
              <th scope="col">CORS</th>
-             <th scope="col">JSONP</th>
              <th scope="col">View entities</th>
              <th scope="col">Suggest entities</th>
              <th scope="col">Suggest types</th>
@@ -166,19 +160,12 @@ export default class FeatureTable extends React.Component {
            documentation={row.documentation}
            source_url={row.source_url}
            wd_uri={row.wd_uri}
-           jsonp={row.jsonp}
            onSelect={this.props.onSelect}
            onVersionDetected={this.handleVersionDetected}
            timedOut={row.timedOut}
-           key={row.wd_uri + ' ' + row.endpoint + (row.jsonp ? ' jsonp' : ' cors')}
+           key={row.wd_uri + ' ' + row.endpoint}
          />
        );
-    }
-
-    loadAllJsonp = () => {
-       this.setState({
-        services: this.state.services.map(row => { row.useJsonp(); return row })
-       });
     }
 
     openAddServiceDialog = () => {
@@ -202,11 +189,6 @@ export default class FeatureTable extends React.Component {
 
       return (
         <>
-          <p>Due to <a href="https://en.wikipedia.org/wiki/JSONP#Security_concerns">a security risk inherent to JSONP</a>, only endpoints supporting <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> are loaded by default. You can click the{' '}
-          <span className="glyphicon glyphicon-search"></span> button in each row to attempt to load the service via <a href="https://en.wikipedia.org/wiki/JSONP">JSONP</a>.
-          Note that a malicious endpoint could use JSONP to execute arbitrary JavaScript code in this page. If you trust all the reconciliation services listed here, you can also <Button onClick={this.loadAllJsonp} bsSize="xsmall">load all endpoints via JSONP</Button>.
-          </p>
-
           {!this.state.showTables ? (
             <div style={{ textAlign: 'center', padding: '40px' }}>
               <span className="glyphicon glyphicon-hourglass" style={{ fontSize: '24px' }}></span>

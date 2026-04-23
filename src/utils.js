@@ -1,6 +1,4 @@
 
-import fetchJsonp from 'fetch-jsonp';
-
 const addParams = (baseUrl, params) => {
    let url = new URL(baseUrl);
    if (params) {
@@ -9,26 +7,9 @@ const addParams = (baseUrl, params) => {
    return url.toString();
 }
 
-export const fetchJsonpParams = (baseUrl, params) => {
-   return fetchJsonp(addParams(baseUrl, params), {timeout: 20000});
-} 
-
 export const fetchParams = (baseUrl, params) => {
    return fetch(addParams(baseUrl, params));
 }
-
-export const postJsonpParams = ({url,queries}) => {
-   return fetchJsonp(url, {
-      method: 'POST',
-      headers: {
-         'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-         queries
-       })
-   });
-}
-
 
 export const postParams = ({
    url,

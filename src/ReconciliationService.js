@@ -1,13 +1,12 @@
 
-import { fetchJsonpParams, fetchParams , postParams , postJsonpParams } from './utils.js';
+import { fetchParams, postParams } from './utils.js';
 import { specVersions } from './JsonSchemas.js';
 import { getSchema } from './JsonValidator.js';
 
 export default class ReconciliationService {
-    constructor(endpoint, manifest, cors) {
+    constructor(endpoint, manifest) {
        this.endpoint = endpoint;
        this.manifest = manifest;
-       this.cors = cors;
 
        // test the service's manifest against manifest schemas
        // for all known versions of the specs, in order.
@@ -22,11 +21,11 @@ export default class ReconciliationService {
     }
 
     getFetcher() {
-       return this.cors ? fetchParams : fetchJsonpParams;
+       return fetchParams;
     }
-    
+
     postFetcher() {
-      return this.cors ? postParams : postJsonpParams;
+      return postParams;
    }
 }
 
