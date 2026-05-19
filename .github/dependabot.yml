@@ -5,13 +5,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    ignore:
-      - dependency-name: "react"
+    groups:
+      non-major-version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
         update-types:
-          - "version-update:semver-major"
-      - dependency-name: "react-dom"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "vite"
-        update-types:
-          - "version-update:semver-major"
+          - "minor"
+          - "patch"
