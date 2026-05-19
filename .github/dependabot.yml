@@ -5,14 +5,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      ignore:
-        - dependency-name: "react"
-          versions:
-            - "16.x"
-        - dependency-name: "react-dom"
-          versions:
-            - "16.x"  
-        - dependency-name: "vite"
-          versions:
-            - "7.x"
-
+    ignore:
+      - dependency-name: "react"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "react-dom"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "vite"
+        update-types:
+          - "version-update:semver-major"
