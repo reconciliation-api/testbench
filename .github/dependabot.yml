@@ -5,3 +5,14 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      ignore:
+        - dependency-name: "react"
+          versions:
+            - "16.x"
+        - dependency-name: "react-dom"
+          versions:
+            - "16.x"  
+        - dependency-name: "vite"
+          versions:
+            - "7.x"
+
