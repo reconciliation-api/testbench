@@ -10,26 +10,26 @@ import ReconciliationService from './ReconciliationService';
 
 export default class ReconciliationServiceInput extends React.Component {
 
+   timer = null;
+
   state = {
     service: this.props.initialService
   };
 
-  componentWillMount() {
-     this.timer = null;
-  }
-
   componentDidMount() {
-    console.log('hey do we need to validate');
-    console.log(this.props.initialService);
     if (this.props.initialService.endpoint && !this.props.initialService.manifest) {
-      console.log('validating endpoint at start');
       this.validateEndpoint();
     }
   }
 
+   componentWillUnmount() {
+      clearTimeout(this.timer);
+      this.timer = null;
+   }
+
   setService(service) {
      this.setState({
-	service: service
+        service: service
      });
   }
 
@@ -54,9 +54,9 @@ export default class ReconciliationServiceInput extends React.Component {
 
   _setService(endpoint, manifest) {
     if(this.state.service.endpoint === endpoint) {
-	let service = new ReconciliationService(endpoint, manifest);
+   let service = new ReconciliationService(endpoint, manifest);
         this.setState({
-	  service: service 
+     service: service 
         });
         if(this.props.onChange !== undefined) {
            this.props.onChange(service);

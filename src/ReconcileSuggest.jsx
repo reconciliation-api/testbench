@@ -29,9 +29,9 @@ export default class ReconcileSuggest extends React.Component {
 
    get manifest() {
       if (!this.props.service) {
-	 return null;
+      return null;
       } else {
-	 return this.props.service.manifest;
+      return this.props.service.manifest;
       }
    }
 
@@ -68,8 +68,7 @@ export default class ReconcileSuggest extends React.Component {
         .then(result => result.json())
         .then(result => {
            this.setState({suggestions: result.result, isLoading: false})})
-        .catch(e => {
-           console.log(e);
+          .catch(() => {
            this.setState({isLoading: false});
         });
    };
@@ -105,9 +104,9 @@ export default class ReconcileSuggest extends React.Component {
      }
    };
 
-   onInputChange = (text, e) => {
+   onInputChange = (text) => {
      if (this.props.onInputChange) {
-       this.props.onInputChange(text, e);
+       this.props.onInputChange(text);
      }
    };
 
@@ -121,12 +120,12 @@ export default class ReconcileSuggest extends React.Component {
            onInputChange={this.onInputChange}
            options={this.state.suggestions}
            labelKey="name"
-           filterBy={(option,props) => true}
+           filterBy={() => true}
            selected={this.getValue() ? [this.getValue()] : []}
            onChange={this.onChange}
            allowNew={this.props.allowNew}
            newSelectionPrefix={this.props.allowNew ? "Use custom path: " : undefined}
-           renderMenuItemChildren={(option, props, index) => {
+           renderMenuItemChildren={(option) => {
               if (option.customOption) {
                 return (
                   <>

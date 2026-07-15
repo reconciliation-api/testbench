@@ -12,10 +12,10 @@ export default class ReconciliationService {
        // for all known versions of the specs, in order.
        this.latestCompatibleVersion = null;
        for (var version of specVersions) {
-	   let schema = getSchema(version, 'manifest');
-	   let valid = schema(manifest);
-	   if (valid) {
-		this.latestCompatibleVersion = version;
+            let schema = getSchema(version, 'manifest');
+            let valid = schema(manifest);
+            if (valid) {
+               this.latestCompatibleVersion = version;
            }
        }
     }

@@ -52,7 +52,7 @@ function TableTab({ onEndpointSelect, style }) {
             indicates which features of the <a href="https://reconciliation-api.github.io/specs/latest/">reconciliation API</a> they support.
            See also our <a href="https://reconciliation-api.github.io/census/">census</a> which lists client and server software that use the API.
         </p>
-        <p>If you are viewing this app over HTTPS it is likely that reconciliation services using HTTP are blocked as "mixed content". You can disable this protection in your browser to load HTTP reconciliation services.</p>
+        <p>If you are viewing this app over HTTPS it is likely that reconciliation services using HTTP are blocked as &quot;mixed content&quot;. You can disable this protection in your browser to load HTTP reconciliation services.</p>
         <FeatureTable onSelect={handleSelect}> 
             <FeatureRow name="OpenCorporates" endpoint="https://opencorporates.com/reconcile" documentation="https://api.opencorporates.com/documentation/Open-Refine-Reconciliation-API" />
         </FeatureTable>
@@ -66,7 +66,7 @@ export default class App extends React.Component {
       selectedEndpoint: '',
       servicesMap: {},
       openTab: 'servicesList',
-      refreshing: false,
+      refreshing: false,
       servicesList: []
     };
   }
@@ -82,10 +82,6 @@ export default class App extends React.Component {
       openTab: 'testBench',
    });
   }
-
-  handleTabSelect = (key) => {
-     this.setState({ openTab: key });
-  };
 
   render() {
     return (
@@ -105,8 +101,11 @@ export default class App extends React.Component {
              <TestbenchTab servicesMap={this.state.servicesMap} onEndpointChange={this.onEndpointSelect} />
            </Route>
         </Switch>
-        <Route exact path="/" children={({ match }) =>
-          <TableTab onEndpointSelect={this.onEndpointSelect}  style={{display: match ? 'block' : 'none'}} />} />
+        <Route exact path="/">
+          {({ match }) => (
+            <TableTab onEndpointSelect={this.onEndpointSelect} style={{display: match ? 'block' : 'none'}} />
+          )}
+        </Route>
       </div>
     </HashRouter>
     );

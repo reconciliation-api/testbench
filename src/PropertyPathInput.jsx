@@ -51,7 +51,7 @@ export default class PropertyPathInput extends React.Component {
     }
   }
 
-  handleInputChange = (text, e) => {
+  handleInputChange = (text) => {
     const isClearing =
       this.state.displayName &&
       (!text || text.length < this.state.displayName.length);

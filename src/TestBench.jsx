@@ -38,7 +38,7 @@ export default class TestBench extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps?.service?.endpoint !== this.props.service.endpoint) {
       this.formulateReconQuery();
     }
@@ -96,16 +96,16 @@ export default class TestBench extends React.Component {
 
   get hasTypeSuggest() {
      return (this.props.service &&
-	     this.props.service.manifest &&
-	     this.props.service.manifest.suggest &&
-	     this.props.service.manifest.suggest.type);
+           this.props.service.manifest &&
+           this.props.service.manifest.suggest &&
+           this.props.service.manifest.suggest.type);
   }
 
   get hasPropertySuggest() {
      return (this.props.service &&
-	     this.props.service.manifest &&
-	     this.props.service.manifest.suggest &&
-	     this.props.service.manifest.suggest.property);
+           this.props.service.manifest &&
+           this.props.service.manifest.suggest &&
+           this.props.service.manifest.suggest.property);
   }
 
   get hasPreviewService() {
@@ -166,8 +166,8 @@ export default class TestBench extends React.Component {
         }
         return (
           <ListGroup>
-            {this.state.reconResults.map(result =>
-              <Candidate candidate={result} manifest={this.props.service.manifest} />
+            {this.state.reconResults.map((result, idx) =>
+              <Candidate key={result.id || idx} candidate={result} manifest={this.props.service.manifest} />
             )}
           </ListGroup>
         );
@@ -389,8 +389,8 @@ export default class TestBench extends React.Component {
                     <JSONTree
                             theme={jsonTheme}
                             data={this.formulateReconQuery()}
-                            getItemString={(type, data, itemType, itemString) => ''}
-                            shouldExpandNode={(keyName, data, level) => true}
+                          getItemString={() => ''}
+                          shouldExpandNode={() => true}
                             hideRoot={true} />
                     <br />
                     <a href={this.formulateQueryUrl()} title="See query results on the service" target="_blank" rel="noopener noreferrer">View query results on the service</a>

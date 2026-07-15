@@ -132,7 +132,7 @@ export default class FeatureRow extends React.Component {
               )}
             </td>
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench" disabled={!this.isReacheable}><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
-	    <td className={'featureCell'}>{this.reconciliationService().latestCompatibleVersion || '?'}</td>
+            <td className={'featureCell'}>{this.reconciliationService().latestCompatibleVersion || '?'}</td>
             <FeatureCell value={this.state.reacheableCORS} />
             <FeatureCell value={this.hasView()} />
             <FeatureCell value={this.hasSuggestEntity()} />

@@ -89,7 +89,7 @@ export default class DataExtensionTab extends React.Component {
            )
            .catch(e => {
               this.setState({
-                exdentResults: 'failed',
+                                extendResults: 'failed',
                 extendError: e.message
               });
            });
@@ -179,8 +179,8 @@ export default class DataExtensionTab extends React.Component {
             <JSONTree
                     theme={jsonTheme}
                     data={this.formulateQuery()}
-                    getItemString={(type, data, itemType, itemString) => ''}
-                    shouldExpandNode={(keyName, data, level) => true}
+                    getItemString={() => ''}
+                    shouldExpandNode={() => true}
                     hideRoot={true} />
             <br />
             <a href={this.formulateQueryUrl()} title="See query results on the service" target="_blank" rel="noopener noreferrer">View query results on the service</a>

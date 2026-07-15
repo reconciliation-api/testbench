@@ -21,7 +21,7 @@ export default class FeatureCell extends React.Component {
         glyph = 'glyphicon glyphicon-hourglass';
         text = 'fetching...';
       }
-      let span = <span className={glyph} sr-only={text} style={{color: color}}></span>;
+      let span = <span className={glyph} aria-label={text} style={{color: color}}></span>;
       return (
         <td className={'featureCell '+cellClass}>
            {span}
