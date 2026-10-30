@@ -5,54 +5,18 @@ import FeatureCell from './FeatureCell';
 import ReconciliationService from './ReconciliationService';
 
 export default class FeatureRow extends React.Component {
-   constructor() {
-      super();
-      this.state = {
-        reacheableCORS: 'checking',
-        manifest: {},
-        corsTimeout: false,
-      };
-   }
-
-   componentDidMount() {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-      fetch(this.props.endpoint, { signal: controller.signal })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeoutId);
-          this.setState({manifest: response, reacheableCORS: true});
-          if (this.props.onVersionDetected) {
-            const service = new ReconciliationService(this.props.endpoint, response);
-            this.props.onVersionDetected(this.props.endpoint, service.latestCompatibleVersion);
-          }
-        })
-        .catch(error => {
-          clearTimeout(timeoutId);
-          const isTimeout = error.name === 'AbortError';
-          this.setState({
-            reacheableCORS: false,
-            corsTimeout: isTimeout
-          });
-          if (this.props.onVersionDetected) {
-            this.props.onVersionDetected(this.props.endpoint, isTimeout ? 'timeout' : null);
-          }
-      });
-   }
-
    suggestSettings() {
-      return this.state.manifest.suggest || {};
+      return (this.props.manifest || {}).suggest || {};
    }
 
    get isReacheable() {
-      return this.state.reacheableCORS === true;
+      return this.props.reacheableCORS === true;
    }
    
    hasView() {
       if (!this.isReacheable)
         return null;
-      return 'url' in (this.state.manifest.view || {});
+      return 'url' in ((this.props.manifest || {}).view || {});
    }
 
    hasSuggestEntity() {
@@ -76,17 +40,17 @@ export default class FeatureRow extends React.Component {
    hasPreview() {
       if (!this.isReacheable)
         return null;
-      return 'preview' in this.state.manifest;
+      return 'preview' in (this.props.manifest || {});
    }
 
    hasExtend() {
       if (!this.isReacheable)
         return null;
-      return 'extend' in this.state.manifest;
+      return 'extend' in (this.props.manifest || {});
    }
 
    reconciliationService() {
-      return new ReconciliationService(this.props.endpoint, this.state.manifest);
+      return new ReconciliationService(this.props.endpoint, this.props.manifest || {});
    }
 
    nameCell() {
@@ -119,7 +83,7 @@ export default class FeatureRow extends React.Component {
    }
 
    render() {
-      const showTimeoutWarning = this.state.corsTimeout || this.props.timedOut;
+      const showTimeoutWarning = this.props.corsTimeout || this.props.timedOut;
 
       return (
         <tr style={showTimeoutWarning ? { backgroundColor: '#fff3cd' } : {}}>
@@ -133,7 +97,7 @@ export default class FeatureRow extends React.Component {
             </td>
             <td><Button bsStyle="primary" bsSize="xsmall" onClick={this.triggerOnSelect} title="Use in test bench" disabled={!this.isReacheable}><span className="glyphicon glyphicon-play"></span></Button>{' '}<a href={this.props.endpoint} target="_blank" rel="noopener noreferrer">{this.props.endpoint}</a></td>
             <td className={'featureCell'}>{this.reconciliationService().latestCompatibleVersion || '?'}</td>
-            <FeatureCell value={this.state.reacheableCORS} />
+            <FeatureCell value={this.props.reacheableCORS} />
             <FeatureCell value={this.hasView()} />
             <FeatureCell value={this.hasSuggestEntity()} />
             <FeatureCell value={this.hasSuggestType()} />

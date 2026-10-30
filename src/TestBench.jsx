@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/lib/Form';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Radio from 'react-bootstrap/lib/Radio';
+import Checkbox from 'react-bootstrap/lib/Checkbox';
 import Button from 'react-bootstrap/lib/Button';
 import Col from 'react-bootstrap/lib/Col';
 import ControlLabel from 'react-bootstrap/lib/ControlLabel';
@@ -28,6 +29,8 @@ export default class TestBench extends React.Component {
 
     this.state = {
         reconQuery: '',
+        reconQueryMatchType: 'name',
+        reconQueryRequired: false,
         reconType: 'no-type',
         reconCustomType: undefined,
         reconProperties: [],
@@ -47,6 +50,18 @@ export default class TestBench extends React.Component {
   onReconQueryChange = (e) => {
     this.setState({
         reconQuery: e.currentTarget.value
+    });
+  }
+
+  onReconQueryMatchTypeChange = (e) => {
+    this.setState({
+        reconQueryMatchType: e.currentTarget.value
+    });
+  }
+
+  onReconQueryRequiredChange = (e) => {
+    this.setState({
+        reconQueryRequired: e.currentTarget.checked
     });
   }
 
@@ -130,7 +145,25 @@ export default class TestBench extends React.Component {
      let url = this.props.service.endpoint;
      url = `${url.replace(/\/$/, '')}/match`;
      fetcher({url,queries:JSON.stringify(this.formulateReconQuery()),userLanguage:this.state.reconUserLanguage})
-        .then(result => result.json())
+        .then(async response => {
+           let body = await response.text();
+           let parsed;
+           try {
+              parsed = body === '' ? undefined : JSON.parse(body);
+           } catch (parseError) {
+              parsed = undefined;
+           }
+           if (!response.ok) {
+              let { summary, items } = this.buildHttpError(response, parsed, body);
+              let error = new Error(summary);
+              error.items = items;
+              throw error;
+           }
+           if (parsed === undefined) {
+              throw new Error('The service responded successfully but sent no readable data.');
+           }
+           return parsed;
+        })
         .then(result =>
            this.setState({
               reconResults: result?.results?.[0]?.candidates?? [],
@@ -139,8 +172,99 @@ export default class TestBench extends React.Component {
         .catch(e => {
             this.setState({
               reconError: e.message,
+              reconErrorItems: e.items || [],
               reconResults: 'failed',
+              reconResponseValidationErrors: [],
         })});
+  }
+
+  buildHttpError(response, parsed, rawBody) {
+     let messages = this.extractServiceMessages(parsed);
+     if (messages.length === 0) {
+        let raw = rawBody && rawBody.trim() !== '' ? rawBody.trim() : '';
+        return { summary: raw || this.friendlyStatusMessage(response.status), items: [] };
+     }
+     if (messages.length === 1) {
+        return this.humanizeMessage(messages[0]);
+     }
+     return {
+        summary: 'The service rejected the request for the following reasons:',
+        items: messages.reduce((acc, m) => {
+           let humanized = this.humanizeMessage(m);
+           return acc.concat(humanized.summary, humanized.items);
+        }, [])
+     };
+  }
+
+  extractServiceMessages(parsed) {
+     if (!parsed || typeof parsed !== 'object') {
+        return [];
+     }
+     if (Array.isArray(parsed.message)) {
+        return parsed.message.filter(m => typeof m === 'string' && m.trim() !== '');
+     }
+     if (typeof parsed.message === 'string' && parsed.message.trim() !== '') {
+        return [parsed.message.trim()];
+     }
+     if (typeof parsed.error === 'string' && parsed.error.trim() !== '') {
+        return [parsed.error.trim()];
+     }
+     return [];
+  }
+
+  humanizeMessage(message) {
+     let text = message.trim();
+     let oneOf = text.match(/^(\S+)\s+must be one of the following values:\s*(.+)$/i);
+     if (oneOf) {
+        let values = oneOf[2].split(',').map(v => v.trim()).filter(Boolean);
+        return {
+           summary: `${this.humanizeFieldPath(oneOf[1])} is not supported by this service. Please choose one of the supported values:`,
+           items: values
+        };
+     }
+     let fieldMatch = text.match(/^([a-zA-Z_][a-zA-Z0-9_.[\]]*)\s+(.+)$/);
+     if (fieldMatch && /[.[]/.test(fieldMatch[1])) {
+        return { summary: `${this.humanizeFieldPath(fieldMatch[1])} ${fieldMatch[2]}.`, items: [] };
+     }
+     return { summary: text, items: [] };
+  }
+
+  humanizeFieldPath(path) {
+     let last = path
+        .split('.')
+        .filter(seg => seg !== '' && !/^\d+$/.test(seg) && seg !== 'queries')
+        .pop() || path;
+     let labels = {
+        type: 'The selected type',
+        conditions: 'The conditions',
+        matchType: 'The match type',
+        propertyValue: 'The value',
+        propertyId: 'The property',
+        matchQuantifier: 'The match quantifier',
+        matchQualifier: 'The match qualifier',
+        limit: 'The limit',
+        properties: 'The properties'
+     };
+     return labels[last] || (last.charAt(0).toUpperCase() + last.slice(1));
+  }
+
+  friendlyStatusMessage(status) {
+     if (status === 400) {
+        return 'The service could not understand the request. Please check the query values and try again.';
+     }
+     if (status === 401 || status === 403) {
+        return 'You are not authorized to use this service.';
+     }
+     if (status === 404) {
+        return 'The service endpoint could not be found.';
+     }
+     if (status === 429) {
+        return 'Too many requests were sent to the service. Please wait a moment and try again.';
+     }
+     if (status >= 500) {
+        return 'The service ran into an error. Please try again later.';
+     }
+     return `The service responded with an unexpected status (${status}).`;
   }
 
   validateServiceResponse(schemaName, response) {
@@ -157,7 +281,18 @@ export default class TestBench extends React.Component {
      if (this.state.reconResults === 'fetching') {
         return (<div className="resultsPlaceholder">Querying the service...</div>);
      } else if (this.state.reconResults === 'failed') {
-        return (<div className="resultsPlaceholder">Error: {this.state.reconError}</div>);
+        let summary = this.state.reconError || 'Something went wrong while contacting the service.';
+        let items = this.state.reconErrorItems || [];
+        return (
+          <Alert bsStyle="danger">
+             <strong>The reconciliation request could not be completed</strong>
+             <p style={{ marginTop: 8, marginBottom: items.length > 0 ? 8 : 0 }}>{summary}</p>
+             {items.length > 0 &&
+                (<ul style={{ marginBottom: 0 }}>
+                   {items.map((item, idx) => <li key={idx} style={{ wordBreak: 'break-all' }}>{item}</li>)}
+                </ul>)}
+          </Alert>
+        );
      } else if (this.state.reconResults === undefined) {
         return (<div />);
      } else {
@@ -215,7 +350,13 @@ export default class TestBench extends React.Component {
     const buildConditions = () => {
       let conditions =
         this.state.reconQuery && this.state.reconQuery.trim() !== ""
-          ? [{ matchType: "name", propertyValue: this.state.reconQuery }]
+          ? [
+              {
+                matchType: this.state.reconQueryMatchType,
+                propertyValue: this.state.reconQuery,
+                ...(this.state.reconQueryRequired ? { required: true } : {})
+              }
+            ]
           : [];
 
       if (hasReconProperties) {
@@ -334,11 +475,28 @@ export default class TestBench extends React.Component {
                            <Col sm={10}>
                            <Row>
                             <Col>
-                                <FormControl
-                                    type="text"
-                                    placeholder={"Name"}
-                                    value={this.state.reconQuery}
-                                    onChange={this.onReconQueryChange} />
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <FormControl
+                                        componentClass="select"
+                                        value={this.state.reconQueryMatchType}
+                                        onChange={this.onReconQueryMatchTypeChange}
+                                        style={{ width: "80px" }}>
+                                        <option value="name">name</option>
+                                        <option value="id">id</option>
+                                    </FormControl>
+                                    <FormControl
+                                        type="text"
+                                        placeholder={this.state.reconQueryMatchType === "id" ? "URI / ID" : "Name"}
+                                        value={this.state.reconQuery}
+                                        onChange={this.onReconQueryChange}
+                                        style={{ flex: 1 }} />
+                                    <Checkbox
+                                        checked={this.state.reconQueryRequired}
+                                        onChange={this.onReconQueryRequiredChange}
+                                        style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                        Required
+                                    </Checkbox>
+                                </div>
 
                                     
                             
@@ -433,7 +591,7 @@ export default class TestBench extends React.Component {
                         <FormGroup controlId="suggestEntityTestBench">
                             <Col componentClass={ControlLabel} sm={1}>Entity:</Col>
                             <Col sm={11}>
-                                <GenericInput service={this.props.service} entityClass="entity" id="entity-input-preview" explicitSubmit onChange={this.onPreviewEntityChange} />
+                                <GenericInput service={this.props.service} entityClass="entity" id="entity-input-preview" explicitSubmit hideManualToggle onChange={this.onPreviewEntityChange} />
                             </Col>
                         </FormGroup>
                     </Form>

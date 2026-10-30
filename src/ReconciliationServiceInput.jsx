@@ -7,6 +7,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel';
 import HelpBlock from 'react-bootstrap/lib/HelpBlock';
 import Col from 'react-bootstrap/lib/Col';
 import ReconciliationService from './ReconciliationService';
+import { normalizeEndpointUrl } from './utils.js';
 
 export default class ReconciliationServiceInput extends React.Component {
 
@@ -45,7 +46,7 @@ export default class ReconciliationServiceInput extends React.Component {
   }
 
   validateEndpoint() {
-     let endpoint = this.state.service.endpoint;
+     let endpoint = normalizeEndpointUrl(this.state.service.endpoint);
      fetch(endpoint)
       .then(result => result.json())
       .then(result => this._setService(endpoint, result))
@@ -53,7 +54,7 @@ export default class ReconciliationServiceInput extends React.Component {
   }
 
   _setService(endpoint, manifest) {
-    if(this.state.service.endpoint === endpoint) {
+    if(normalizeEndpointUrl(this.state.service.endpoint) === endpoint) {
    let service = new ReconciliationService(endpoint, manifest);
         this.setState({
      service: service 
@@ -65,7 +66,7 @@ export default class ReconciliationServiceInput extends React.Component {
   }
 
   _setError(endpoint, error) {
-    if(this.state.service.endpoint === endpoint) {
+    if(normalizeEndpointUrl(this.state.service.endpoint) === endpoint) {
         this.setState({manifest: undefined, error: error})
         if(this.props.onChange !== undefined) {
            this.props.onChange(undefined, undefined);
@@ -109,7 +110,7 @@ export default class ReconciliationServiceInput extends React.Component {
           <FormGroup controlId="endpointField" validationState={this.getValidationState()}>
             <Col componentClass={ControlLabel} sm={1}>Endpoint:</Col>
             <Col sm={11}>
-                <FormControl type="text" value={this.state.service.endpoint} placeholder="URL of the reconciliation service endpoint" onChange={e => this.handleChange(e)}/>
+                <FormControl type="text" value={this.state.service.endpoint} placeholder="URL of the reconciliation service endpoint (https:// is assumed if omitted)" onChange={e => this.handleChange(e)}/>
                 <FormControl.Feedback />
                 <HelpBlock>{this.getMessage()}</HelpBlock>
             </Col>

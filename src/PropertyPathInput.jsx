@@ -169,6 +169,7 @@ export default class PropertyPathInput extends React.Component {
           onChange={this.handleChange}
           onInputChange={this.handleInputChange}
           allowNew={true}
+          nestedPathSearch={true}
         />
       </div>
     );
