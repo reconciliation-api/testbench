@@ -55,8 +55,45 @@ describe('ReconciliationServiceInput', () => {
     expect(serviceArg.manifest).toEqual(manifest);
   });
 
-  it('shows validation message and clears parent value when endpoint fetch fails', async () => {
+  it('assumes https:// when the endpoint is entered without a scheme', async () => {
     const onChange = vi.fn();
+    const typedEndpoint = 'example.org/reconcile';
+    const normalizedEndpoint = 'https://example.org/reconcile';
+    const manifest = {
+      name: 'Example service',
+      identifierSpace: 'https://example.org/entity/',
+      schemaSpace: 'https://example.org/schema/',
+      view: {
+        url: 'https://example.org/entity/{{id}}',
+      },
+    };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue(manifest),
+    });
+
+    render(
+      <ReconciliationServiceInput
+        initialService={{ endpoint: '' }}
+        onChange={onChange}
+      />,
+    );
+
+    const input = screen.getByLabelText(/endpoint:/i);
+    fireEvent.change(input, { target: { value: typedEndpoint } });
+
+    await vi.advanceTimersByTimeAsync(1000);
+
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith(normalizedEndpoint);
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    const serviceArg = onChange.mock.calls[0][0];
+    expect(serviceArg.endpoint).toBe(normalizedEndpoint);
+  });
+
+  it('shows validation message and clears parent value when endpoint fetch fails', async () => {    const onChange = vi.fn();
     const endpoint = 'http://bad.example/reconcile';
 
     globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));

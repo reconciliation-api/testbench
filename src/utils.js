@@ -1,3 +1,13 @@
+export const normalizeEndpointUrl = (endpoint) => {
+   if (!endpoint) {
+      return endpoint;
+   }
+   let trimmed = endpoint.trim();
+   if (trimmed === '' || /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) {
+      return trimmed;
+   }
+   return `https://${trimmed}`;
+}
 
 const addParams = (baseUrl, params) => {
    let url = new URL(baseUrl);

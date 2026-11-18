@@ -5527,9 +5527,10 @@ export const specSchemas = {
               "properties": {
                 "matchType": {
                   "type": "string",
-                  "description": "A string to indicate whether to match the supplied value to entity names or property values",
+                  "description": "A string to indicate whether to match the supplied value to entity names, entity ids, or property values",
                   "enum": [
                     "name",
+                    "id",
                     "property"
                   ]
                 },
